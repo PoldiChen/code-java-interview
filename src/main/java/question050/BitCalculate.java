@@ -1,5 +1,10 @@
 package question050;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public abstract class BitCalculate {
 	
 	public static void main(String[] args) {
@@ -12,6 +17,9 @@ public abstract class BitCalculate {
 		int i1 = Integer.MAX_VALUE; // 0111,1111,1111,1111,1111,1111,1111,1111
 		int i2 = Integer.MAX_VALUE;
 		System.out.println(i1+i2); // -2   1111,1111,1111,1111,1111,1111,1111,1110 -2的二进制表示
+		
+		System.out.println(Integer.MAX_VALUE); // 2,147,483,647
+
 	}
 
 }
