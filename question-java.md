@@ -21,11 +21,11 @@ Collection接口指定一组对象，对象即是它的元素，如何维护这�
 涉及到具体实现时，clone和serialize的语义和含义才发挥作用。<br>
 
 ##### 5. HashMap、Hashtable和ConcurrentHashMap的区别？ConcurrentHashMap能否完全替代Hashtable？HashMap为什么是线程不安全的？
-HashMap |	Hashtable |	ConcurrentHashMap
-- | - | -
-非线程安全 |	线程安全 | 线程安全
-/ | 实现基于锁 |	锁分段
-key和value允许为null | key和value不允许为null | /
+| HashMap |	Hashtable |	ConcurrentHashMap |
+| - | - | - |
+| 非线程安全 |	线程安全 | 线程安全 |
+| / | 实现基于锁 |	锁分段 |
+| key和value允许为null | key和value不允许为null | / |
 
 HashMap和TreeMap的区别？
 
