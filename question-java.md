@@ -131,9 +131,155 @@ Java NIO中有一个选择器（selector），可以将多个通道（channel）
 栈主要存放栈帧，局部变量表、操作数栈、动态链接、方法出口信息；栈相关的内存异
 常包括StackOverFlowError(方法调用次数太多，栈内存不够新建栈帧，比如递归的层次太多)和OutOfMemoryError(线程太多，栈内存不够新建线程)。
 
+#### 21. 数据库查询left join、right join和inner join？
+left：以左表为准，右表不存在的字段为null<br>
+right：以右表为准，左表不存在的字段为null<br>
+inner：取左右两张表都存在的字段
 
+#### 22. 创建对象的几种方式？
+(1) new<br>
+(2) Class类的newInstance方法<br>
+(3) Constructor类的newInstance方法<br>
+(4) clone<br>
+(5) 反序列化<br>
+前三种调用了构造函数。两种newInstance就是反射，Class的newInstance方法内部调用了Constructor的newInstance方法，众多框架如Spring、Hibernate使用的是Constructor。
 
+#### 23.Java的四种引用，强引用、软引用、弱引用、虚引用？？？？？？？？？？
+强引用 |	软引用 | 弱引用 | 虚引用
+-|-|-|-
+引用存在则永远不会回收，即使内存不足，也是抛出OutOfMemory。<br>通过赋值为null可以中断强引用和对象的关联。 | 内存溢出之前回收 | 第二次垃圾回收时回收。<br>一旦发现就会回收？？？ | 每次垃圾回收都会被回收
+/ | 实现图片缓存功能，内存不足时回收不再使用的Bitmap | / | 用来跟踪对象被垃圾回收的回收活动
 
+因为Java的垃圾回收时机是不可控的，所以使用不同的引用类型来适当控制对象被回收的时机。<br>
+通过软引用实现Java对象的高速缓存：软引用和HashMap的结合。？？？
+
+#### 24. 进程间的通信方式？
+(1) 管道（pipe）：管道是一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程间的亲缘关系通常是指父子进程关系。<br>
+(2) 有名管道（named pipe）：有名管道也是半双工的通信方式，但它允许无亲缘关系的进程间通信。<br>
+(3) 信号量（semophore）：信号量是一个计数器，可以用来控制多个进程对共享资源的访问。常作为一种锁机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程的线程之间的同步手段。<br>
+(4) 消息队列（message queue）：消息队列是由消息的链表，存放在内核中并由消息队列标识符标识。消息队列克服了信号量传递信息少、管道只能承载无格式字节流及缓冲区大小受限等缺点。<br>
+(5) 信号（signal）：一种比较复杂的通信方式，用于通知接收进程某个事件已经发生。<br>
+(6) 共享内存（shared memory）：映射一段能被其他进程访问的内存，这段内存由一个进程创建，但多个进程都可以访问。共享内存是最快的IPC方式，针对其他进程间通信方式运行效率低而设计的，往往与其他进程间通信方式，如信号量，配合使用。<br>
+(7) 套接字（socket）：可用于不同机器间的进程通信。
+
+#### 25. 连接MySQL数据库的语句？code
+
+#### 26. 不使用框架的情况下的分页查询？
+select * from table limit 300, 100;<br>
+300表示起始位置，100表示查询的数量
+
+#### 27. 数据库查询的左连接、右连接、内连接？
+left join：A left join B on A.id = B.id;以左表A为准，右表没有的数据用null表示<br>
+right join：A right join B on A.id = B.id;以右表B为准，左表没有的数据用null表示<br>
+inner join：A inner join B on A.id = B.id;取出两张表都有的数据
+
+#### 28. Oracle和MySQL的索引？
+Oracle的索引有聚集索引、非聚集索引、唯一索引。<br>
+查询时可以提高效率，但插入时需要重新排序，降低了效率。
+
+#### 29. JDK 1.6和JDK 1.7的substring方法的区别？
+1.7版本的substring方法会new String()创建一个新的字符串，1.6不会
+
+#### 30. 可以随机访问的集合类？线程安全的集合类？
+随机访问：ArrayList、HashMap、TreeMap、Hashtable<br>
+线程安全：Vector、Hashtable、ConcurrentHashMap、Stack、Properties
+
+#### 31. Collection和Collections的区别？
+Collection | Collections
+-|-
+接口 | 工具类，提供了很多静态方法
+
+#### 32. 创建只读集合、同步集合？
+Collections.unmodifiableCollection(Collection c);<br>
+Collections.synchronizedCollection(Collection c);
+
+#### 33. 子类能否覆盖（override）父类的static方法？能否覆盖private方法？code
+不能。覆盖是运行时动态绑定的，而static方法是在编译时静态绑定的。子类中可以有和父类中签名一样的方法，但不能用@override声明，一般称为隐藏。<br>
+不能。也不能被继承。
+
+#### 34. a = a + b;和a += b;的区别？
++=操作隐式的将结果强制转换为持有结果的类型。<br>
+两个整型相加，如byte、short、int会提升到int类型，然后做加法操作
+
+#### 35. volatile的作用？
+(1) 提供顺序（happens-before）保证：阻止JVM对语句重排、确保一个线程对变量的修改对其他线程可见。<br>
+(2) 提供可见性保证：CPU缓存（线程工作内存）和主存一致（解决缓存一致性问题）<br>
+实例化一个对象的时候也可能发生语句重排，三个步骤：<br>
+a. 分配内存空间<br>
+b. 初始化对象<br>
+c. 将内存空间的地址赋给对应的引用<br>
+指令重排后可能先将地址赋给引用，再初始化对象，多线程环境下可能会将未初始化的对象暴露出来。<br>
+(3) 将非原子操作变为原子操作（对单个变量的读写具有原子性）（不能保证++操作的原子性）：如double、long类型，64位，每次只能读取32位，不是原子操作，volatile能将其变成原子操作（内存屏障）。<br>
+(4) 和CAS结合保证原子性（volatile本身不能保证原子性），如java.util.concurrent.atomic包下的类，AtomicInteger<br>
+(5) 常用于标记状态量和double check。
+
+#### 36. 能否创建一个包含不可变对象的可变对象？
+可以，如包含日期对象的自定义对象。不能共享可变对象的引用
+
+#### 37. 32位JVM和64位JVM的最大堆内存分别是多少？
+32位堆内存2^32，4GB，寻址的基本单位是B，2^32=4G<br>
+64位堆内存2^64。受限于物理内存和操作系统提供的虚拟内存。<br>
+32位JVM的程序迁移到64位JVM上，性能会损失10%~20%。JVM虚拟机规范包括JIT编译器和垃圾回收，字节码更小更容易编译？？？指针越大GC管理越困难？？？
+
+#### 38. JRE、JDK、JVM、JIT？
+JRE：Java run-time environment，Java运行时环境<br>
+JDK：Java development kit，开发工具，如编译器，也包括jre<br>
+JVM：Java virutal machine，Java虚拟机，运行java程序<br>
+JIT：Just In Time compilation，即时编译，将热点代码的字节码转化为本地代码，提高性能
+
+#### 39. 怎样获取Java程序使用的内存？
+java.lang.Runtime类，freeMemory()、totalMemory()、totalMemory()等方法
+
+#### 40. 编译期常量？
+public static final修饰的成员。<br>
+在编译时会被替换掉，因为编译器直到这些常量的值，并且知道他们在运行时是不改变的。<br>
+如果依赖的第三方库中有编译期常量，且引入后又发布人又修改过，则需要重新编译，否则使用的还是旧的值。
+
+#### 41. 遍历ArrayList时删除一个元素，什么时候会抛出ConcurrentModificationException？
+
+#### 42. 什么时候用享元模式？
+享元模式通过共享对象来避免创建过多的对象。需确保对象是不可变的。<br>
+JDK中的String池、Integer池都是享元模式的例子。
+
+#### 43. 访问修饰符的作用范围由大到小：
+public > protected > default > private
+
+作用域 | 当前类 | 同一package | 子孙类 | 其他package
+-|-|-|-|-
+public | √ | √ | √ | √
+protected | √ | √ | √ | ×
+friendly | √ | √ | × | ×
+private | √ | × | × | ×
+
+#### 44. 哈希表中处理冲突的方法？
+线性探测、二次哈希、链接<br>
+线性探测：如果桶已经被占据了，则线性的查找下一个桶，直到找到一个空位<br>
+链接：多个元素可以存储在同一个桶中
+
+#### 45. sql查找第二大的值？
+
+#### 46. 使用位运算判断一个数是不是2的幂？
+x & (x - 1) == 0<br>
+2的幂的二进制表示是1000...000，减去1表示为0111...111，进行与运算结果为0.
+
+#### 47. IO操作的两种方式？
+面向字节（Byte） | 面向字符（Character）
+-|-
+以8位为单位对二进制数据进行操作 | 以字符为单位对数据进行操作
+InputStream和OutputStream的子类 | Reader和Writer的子类
+
+#### 48. 常用的加密算法？
+对称加密：DES、AES<br>
+非对称加密：RSA、DSA<br>
+单向散列函数加密：MD5、SHA<br>
+
+#### 49. 如何跳出当前的多重嵌套循环？code
+使用标号。
+
+#### 50. Java中负数的二进制如何表示？byte类型、int类型运算的溢出？
+负数使用正值的补码表示。（反码加1则为补码）<br>
+int类型溢出项目实例：<br>
+两个系统交互，传送文件，用一个int类型的值保存文件的大小，单位为B（字节）。int类型能表示的最大整数约为2,000,000,000，即int类型值表示的最大文件大约为2GB，当文件大于2GB时则发生了int类型的溢出。
 
 
 
