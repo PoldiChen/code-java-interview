@@ -281,6 +281,215 @@ InputStream和OutputStream的子类 | Reader和Writer的子类
 int类型溢出项目实例：<br>
 两个系统交互，传送文件，用一个int类型的值保存文件的大小，单位为B（字节）。int类型能表示的最大整数约为2,000,000,000，即int类型值表示的最大文件大约为2GB，当文件大于2GB时则发生了int类型的溢出。
 
+#### 51. Math类的三个取整的方法？
+ceil，floor和round<br>
+ceil：向上取整<br>
+floor：向下取整<br>
+round：加0.5后再向下取整<br>
+
+#### 52. synchronized和java.util.concurrent.locks.Lock的区别？
+Lock能完成synchronized的所有功能。<br>
+Lock有更精确的线程语义和更好的性能。<br>
+synchronized自动释放锁，Lock需要程序手动释放，且必须在finally中释放。<br>
+Lock为读和写分别提供了锁。<br>
+Lock接口可以尝试非阻塞的获取锁，在指定的时间内无法获取，则返回。
+
+#### 53. ArrayList和Vector的区别？
+ArrayList | Vector
+-|-
+相同点 | 都是基于索引，内部有一个数组支持<br>有序的集合，允许重复<br>迭代器都是fail-fast的
+非线程安全 | 线程安全
+每次扩容为1.5倍 | 每次扩容为2倍
+
+Vector可以看做是线程安全版的ArrayList。<br><br>
+Array和ArrayList的区别？什么时候用Array而不是ArrayList？
+
+Array | ArrayList
+-|-
+可以包含基本类型和对象类型 | 只能包含对象类型
+大小固定 | 大小动态变化
+
+处理基本数据类型的时候应该使用Array。<br><br>
+
+ArrayList和LinkedList的区别？源码？？？
+
+ArrayList | LinkedList
+-|-
+数组，允许元素为null | 双向循环链表，允许元素为null
+随机访问快，增删慢 | 随机访问慢，增删快
+/ | 根据下标访问的时候会判断在前半段还是后半段，决定顺序遍历还是逆序
+
+#### 54. 如何去除Vector、ArrayList、LinkedList中重复的元素？
+使用HashSet，将数组的实例作为参数传入HashSet的构造函数中。
+
+#### 55. 快排算法实现？其他排序算法？？？code
+冒泡排序<br>
+插入排序<br>
+（多路）归并排序<br>
+
+#### 56. Spring的IoC容器如何为普通的类（非单例模式）创建单例？是线程安全的吗？
+Bean的配置有个scope属性，有5种值：singleton、prototype、request、session、global-session，默认使用singleton，比如：<br>
+```
+<bean id="p1" class="com.test.Person" />
+<bean id="p2" class="com.test.Person" scope="prototype" />
+```
+不是线程安全的。大部分的bean没有可变的状态，但View Model有多种状态，需要自行保证线程安全，一个简单的方法就是把作用域从默认的singleton改成prototype，每次请求都创建一个新的bean。
+
+#### 57. Javascript是否支持面向对象？
+是。
+
+#### 58. MySQL的union和union all的区别？
+将两个查询子集进行合并，union和自动去除重复的记录，union不去除
+
+#### 59. 注册jdbc驱动程序的三种方式？
+
+#### 60. 什么情况下不建议使用hibernate？
+数据量大、表关系复杂
+
+#### 61. 数据库的三大范式？
+第一范式：每列都是不可分割的原子值，所有关系型数据库都满足<br>
+第二范式：每列都和主键相关<br>
+第三范式：一个表中不能包含已经在其他表中存在的非主键字段，即不能冗余<br>
+          非主键字段不能相互依赖？
+
+#### 62. 如何创建一个不可变（immutable class）对象？JDK有哪些不可变对象？？？
+(1) 类用final修饰<br>
+(2) 类的所有成员都用final修饰<br>
+(3) 如果包含可变的成员，则在获取该成员的时候返回一个拷贝<br>
+另一种回答：<br>
+(1) 将所有成员声明为私有的<br>
+(2) 通过构造函数初始化所有成员<br>
+(3) 对变量不要提供setter方法<br>
+(4) 在getter方法中，不要返回对象，而是克隆对象，返回对象的拷贝<br><br>
+怎么证明不可变？？？？？？？？？？？<br><br>
+JDK的不可变类有String、Integer和其他包装类型。
+
+#### 63. Java中的构造器链？
+在一个构造器中调用了另一个构造器，只在重载了类的构造器的时候有可能出现。
+
+#### 64. 使用递归的方法将一个字符串反转？code
+
+#### 65. 不使用临时变量的情况下交换两个整数的值？code
+
+#### 66. synchronized和ReentrantLock的区别？为什么要设计可重入锁ReentrantLock？？？
+重入性：同一个线程多次试图获取它占有的锁，都会成功。相应的，释放锁时，重入计数为零才释放成功。
+
+synchronized | ReentrantLock
+-|-
+阻塞式 | 阻塞式
+Java的关键字，原生语法层面的互斥，需要jvm实现 | JDK 1.5之后提供的API层面的互斥锁
+执行完同步块的代码后自动释放锁 | 需要手动lock和unlock，配合try/finally
+释放锁的顺序必须和获得锁的顺序相反 | 释放锁的顺序自由
+不能中断 | 可中断
+
+#### 67.main方法不用static修饰会怎样？
+
+#### 68.Java socket通信？
+question 94
+
+#### 69. JSP九大内置对象？
+out对象：是JspWriter类的实例，向客户端输出内容<br>
+request对象：表示客户端的一次请求，封装了请求的信息，是HttpServletRequest类的实例，在请求完成之前一直是有效的。<br>
+response对象：包含了响应客户端的信息，是HttpServletResponse类的实例，具有页面的作用域<br>
+session对象：会话，一个客户端打开浏览器连接到服务器，到客户端关闭浏览器。HttpSession类的实例。<br>
+application对象：实现了用户间数据的共享，可以存放全局变量，生命周期从服务器启动到关闭<br>
+page对象<br>
+pageContext对象<br>
+exception对象<br>
+config对象
+
+#### 70. 请求转发和请求重定向？
+转发 | 重定向
+-|-
+服务端行为 | 客户端行为
+request.getRequestDispatcher().forward() | response.sendRedirect()
+一次请求 | 两次请求
+客户端url地址不变 | 客户端url地址改变
+
+#### 71. 部署在tomcat的web项目启动的过程？
+tomcat有三种加载程序的方式：<br>
+1) 配置在conf/server.xml中<br>
+2) 配置在conf/Catalina/localhost下<br>
+3) 配置在webapps下
+<br><br>
+web.xml加载过程：<br>
+context-param->listener->filter->servlet<br>
+1) 读取web.xml文件的两个节点&lt;listener&gt;和&lt;context-param&gt;<br>
+2) 创建一个ServletContext上下文，为web项目共享<br>
+3) 将<context-param>转化为键值对，赋给ServletContext<br>
+4) 创建<listener>中的类实例，即创建监听<br>
+5) 创建filter<br>
+6) 创建servlet<br>
+
+#### 72. 什么是session钝化？
+正常情况下，session是存放在服务器的内存当中的，用户较多时，服务器的开销会很大，需要把未使用到的session对象序列化到文件系统中，需要用到的时候再反序列化到内存中。
+
+#### 73. 反射的作用是什么？什么是动态语言？Java是不是动态语言？
+动态语言是指在运行时可以改变其结构：引进或删除函数。如javascript、Python、Ruby<br>
+动态语言在运行时才检查类型，静态语言在运行前检查，如编译阶段。<br>
+动态语言不需要写过多关于类型的代码，方便阅读，但不易调试；静态语言结构规范，易于调试，但需要写更多的类型代码。<br>
+Java是静态语言，或“准动态语言”，主要体现在反射和动态编译、动态类型转换、动态字节码操作。<br>
+
+反射机制是java被视为准动态语言的关键特质。允许程序在运行时通过反射得到一个已知名称的类的内部信息。<br>
+
+反射的作用：<br>
+(1) 在运行时判断任意一个对象所属的类<br>
+(2) 在运行时判断任意一个类具有的成员变量和方法<br>
+(3) 在运行时调用任意一个对象的方法<br>
+(4) 在运行时构造任意一个类的对象<br>
+(5) 生成动态代理操作<br>
+
+反射的缺点：<br>
+(1) 性能相对较低<br>
+(2) 不安全，破坏了类的封装性（获取类的私有方法和属性）
+
+#### 74. Java创建实例化对象的几种方式？
+(1) new语句<br>
+(2) 工厂方法，如String s = String.valueOf();<br>
+(3) 反射机制，Class类的三种方法，或者通过类类型的newInstance()方法<br>
+(4) clone<br>
+(5) 反序列化
+
+#### 75. SpringMVC工作流程？
+(1) 请求request到达DispatcherServlet（DispatcherServlet能够拦截所有请求）<br>
+(2) DispatcherServlet查找HandleMapping，将功能代理给HandleMapping<br>
+(3) HandleMapping根据配置，找到Controller和HandleInterceptor<br>
+(4) 把Controller和HandleInterception制作成一个可执行的链条，也就是HandleAdapter<br>
+(5) HandleAdapter将信息返回给DispatcherServlet，DispatcherServlet开始调用这个一般化的处理器<br>
+(6) Controller生成ModelAndView，返回给DispatcherServlet<br>
+(7) DispatcherServlet调用ViewResolver视图解析器，返回到View对象<br>
+(8) ModelAndView将数据传递到View
+
+#### 76. 注解的作用？自定义注解？（项目中的使用，参数检查）
+
+#### 77. 深复制和浅复制？
+question 19
+
+#### 78. Spring有哪些类型的依赖注入方式？
+(1) 构造器依赖注入：通过容器触发类的一个构造器，参数可以表示对其他类的依赖<br>
+(2) setter方法依赖注入：通过容器调用无参构造器或无参static工厂方法实例化bean，调用bean的set方法<br>
+(3) 接口注入
+
+#### 79. Spring框架中bean的生命周期？
+一个bean实例初始化时，需要执行一系列的初始化操作以达到可用状态；不再被调用时需要执行相关的析构操作，从bean容器移除。<br>
+BeanFactory负责管理bean的生命周期，bean的生命周期由两组回调函数组成：初始化之后调用的回调方法和销毁之前调用的回调方法。<br>
+Spring框架提供了4种方式来管理bean的生命周期：
+
+#### 80. Spring的bean装配？自动装配？
+bean装配是指在spring容器中把bean组装在一起，前提是容器需要知道bean的依赖关系，通过依赖注入装配到一起。<br>
+spring容器能够自动装配相互合作的bean。<br>
+自动装配的5种模式：<br>
+(1) no：默认的方式，不自动装配，通过手动设置ref属性来装配<br>
+(2) byName：通过参数名自动装配，查找和bean属性具有相同名字的其他bean<br>
+(3) byType：通过参数的类型自动装配，查找和bean属性类型相同的其他bean<br>
+(4) constructor：和byType类似<br>
+(5) autodetect：如果有默认的构造函数，则通过constructor的方式，否则通过byType的方式<br>
+
+
+
+
+
+
 
 
 
