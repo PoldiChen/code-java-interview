@@ -648,6 +648,161 @@ start方法用来启动新创建的线程，内部调用了run方法。<br>
 导致竞争条件的区域称为临界区（Critical Section）。<br>
 最常见的竞态条件是先检测后执行，比如单例模式的懒汉式实现，先检测实例是否存在，再实例化。
 
+#### 101. 单例模式和静态变量的区别？
+单例模式能保证一个类只有一个实例，而静态变量只是保证该类在当前的类中只有一个实例，其他类可以重新创建该类的实例。<br>
+单例模式的类完成自身的初始化。
+
+#### 102. 如何停止一个线程？
+(1) 使用退出标志，设置一个bool变量（用volatile修饰），在run方法中判断bool变量决定是否执行，可以在线程外改变bool的值来退出线程。<br>
+(2) stop方法，不推荐<br>
+(3) interruput方法
+
+#### 103. 线程间通信方式？
+(1) 同步，通过synchronized关键字<br>
+(2) while轮询，浪费CPU资源<br>
+(3) wait/notify<br>
+(4) 管道
+
+#### 104. 编写两个线程，一个线程打印1~52，另一个线程打印字母A~Z，打印顺序为12A34B56C……5152Z，要求使用线程间的通信。code
+
+#### 105. 为什么wait、notify、notifyAll这些方法放在Object中而不是Thread中？
+Java提供的锁是对象级的而不是线程级的，每个对象都有锁，通过线程可以获得。<br>
+线程需要等待某些锁调用对象的wait方法就有意义了，如果wait方法定义在Thread中，线程在等待的就不知道是哪个对象的锁。
+
+#### 106. 线程的interrupted方法和isInterrupted方法的区别？
+interrupt方法用于中断线程，调用线程的该方法将线程置为“中断状态”，但不会停止线程，需要用户去监听线程的状态并做处理，是否会抛出中断异常。<br>
+两个方法最终都会调用一个本地方法，传递一个参数，是否将中断状态清除<br>
+
+interrupted | isInterrupted
+-|-
+Thread的静态方法 | Thread的实例方法
+作用于当前线程 | 作用于调用该方法的线程对象对应的线程
+清除中断状态 | 不清除中断状态
+
+#### 107. wait和notify为什么需要在同步代码块中调用？
+(1) API强制要求，否则会抛出IlleagelMonitorStateException<br>
+(2) 避免竞态条件，比如生产-消费模型，生产和消费都是“先检查后执行”，如果没有在synchronized代码块中执行wait/notify，可能出现生产者还没wait，消费者就先notify，那之后生产者就永远不会被通知到。
+
+#### 108. 对于线程来说，堆内存和栈内存有什么区别？
+每个线程都有自己的栈内存，用于存储本地变量、方法参数、栈调用，一个线程中存储的变量对其他线程是不可见的。<br>
+堆内存是所有线程共享的，对象都在堆中创建。<br>
+为了提高效率，线程会从堆中弄一块内存缓存在自己的栈中，如果多个线程使用同一个变量就会引发问题，这是volatile变量就会发挥作用了，它要求线程从主内存中读取该变量的值。
+
+#### 109. Java同步集合和并发集合的区别？
+都能实现线程安全，区别在于性能和可扩展性，还有实现线程安全的方法。<br>
+同步集合有：HashMap、Hashtable、HashSet、Vector、ArrayList<br>
+并发集合有：ConcurrentHashMap、CopyOnWriteArrayList、CopyOnWriteHashSet<br>
+同步集合会把整个List或Map锁起来，而并发集合使用了较先进的技术，如锁分离，比如ConcurrentHashMap把Map分成几个片段，只对几个加锁，允许其他线层访问未加锁的片段。<br>
+CopyOnWriteArrayList允许多个线程以非同步的方式读，有线程需要写的时候复制一个副本。<br>
+在读多写少的情况下使用并发集合比同步集合能获得更好的性能。
+
+#### 110. 多线程生产-消费模型实例？在环境下如何实现？
+wait-notify<br>
+Blockingqueue<br>
+Lock、Conditiion<br>
+模型的本质是传递生产者和消费者之间的消息，分布式环境下可用第三方传递消息的媒介，如Zookeeper、Redis、Kafka。
+
+#### 111. 多线程信号灯（信号量）模型？code
+Semaphore，信号量，限制某段代码块的并发数，由构造函数的参数传入。超出数量的线程需要等待，直到某个线程执行完了，下一个线程才能进入。
+
+#### 112. 多线程哲学家就餐模型？code
+
+#### 113. 多线程CountDownLatch使用？
+适用于几个子线程运算后由一个主线程汇总计算结果的场景。
+
+#### 114. 多线程Lock和Condition类的使用？code
+生产-消费模型
+
+#### 115. 死锁的条件？实例？如何避免死锁？code
+(1) 互斥条件：一个资源每次只能被一个进程使用<br>
+(2) 请求与保持条件：一个进程因请求资源而阻塞时，已获得的资源不释放<br>
+(3) 不剥夺条件：进程已获得的资源，在使用完之前，不能强行剥夺<br>
+(4) 循环等待条件：若干进程之间形成一种首尾相接的循环等待资源关系<br>
+
+避免死锁最简单的方法就是阻止循环等待条件，将系统中所有资源设置标志位、排序，规定所有进程申请资源必须以一定的顺序。<br>
+避免嵌套加锁：已经取得了一个资源，避免在释放前去获取另一个资源<br>
+避免无期限的等待：设置最长等待时间（如何设置？？？）
+
+#### 116. 如何保证多个线程按顺序执行？code
+使用线程的join方法，先启动最后一个线程，依次调用前一个线程的join方法。
+
+#### 117. 什么是Java中的ReadWriteLock？实例？code
+用来提升并发程序性能的锁分离技术。<br>
+一个ReadWriteLock维护一对关联的锁，一个用于只读一个用于写。<br>
+在没有写线程的情况下一个读锁可能会被多个线程持有，而写锁是独占的。<br>
+适用于缓存的实现。
+
+#### 118. volatile变量和atomic变量的区别？Atomic源码？？？
+volatile变量能保证先行关系，即写操作会发生在后续的读操作之前，但不能保证原子性，如++操作。<br>
+AtomicInteger类提供的具有原子性的getAndIncrement方法。
+
+#### 119. Java中进程和线程的区别？
+一个进程对应一个执行的程序，一个线程则是进程执行过程中一个单独的执行序列。<br>
+一个进程可以包含多个线程。<br>
+线程也被称为轻量级的进程。<br>
+一个Java虚拟机的实例运行在一个单独的进程中，不同的线程共享Java虚拟机进程的堆内存，同时保有自己的栈内存。
+
+#### 120. 线程“等待”状态和“阻塞”状态的区别？
+阻塞：试图获得一个锁，而这个锁正被其他线程持有<br>
+等待：等待另一个线程通知调度器来唤醒？<br>
+两者都会暂停线程的执行，进入waiting状态是线程主动的，进入blocked状态是被动的。<br>
+进入waiting状态是在同步代码块内，进入blocked状态是在同步代码块外。
+
+#### 121. 线程“同步”和“阻塞”的区别？“同步阻塞”和“同步非阻塞”？
+
+#### 122. 如何自定义注解？
+
+#### 123. Spring源码-IoC？
+BeanFactory：bean的管理工厂，所有bean都在其中创建、存储、销毁<br>
+DefaultListableBeanFactory：BeanFactory的实现类<br>
+Resource：spring的配置信息，可以来自xml文件、网络、数据流<br>
+BeanDefinition：封装bean的所有信息，包括参数值、方法名、是否懒加载、是否单例<br>
+BeanDefinitionReader：构建BeanDefinition，从Resource中读取信息封装成BeanDefinition<br>
+ApplicationContext：上下文，实现了各种接口，封装了各种bean对象<br>
+Environment：运行环境配置信息<br>
+Document：从xml文件中抽取出来的文本对象<br>
+Element：从Document中抽取出来的node节点<br>
+spring-test
+
+#### 124. Spring源码-AOP？在项目中的使用？和拦截器、过滤器的区别？？？
+两种代理的方式：默认使用JDK动态代理，目标类无接口的时候用cglib（code generation library），代码生成类库，可以在运行时时期扩展Java类实现Java接口，动态生成新的class<br>
+权限验证、异常处理。
+
+#### 125. 什么是线程调度器（Thread Scheduler）和时间分片（Time Slicing）？
+线程调度器是一个操作系统服务，为runnable状态的线程分配CPU时间。<br>
+一个线程创建并启动后，它的执行便依赖于线程调度器的实现。<br>
+时间分片是指将可用的CPU时间分配给可用的runnable线程的过程。<br>
+
+#### 126. 为什么wait()、notify()、notifyAll()必须在同步方法或同步代码块中调用？
+当一个线程需要调用一个对象的wait方法的时候，必须拥有该对象的锁，调用后会释放锁并进入等待状态，知道其他线程调用这个对象的notify方法。<br>
+同样的，线程调用对象的notify方法时，会释放对象的锁，其他等待的线程可以得到这个对象的锁。<br>
+所有的这些方法都需要线程持有对象的锁，只能通过同步来实现。
+
+#### 127. 为什么Thread类的sleep()和yield()方法是静态的？
+sleep()和yield()方法将在当前正在运行的线程上执行，在其他等待状态的线程上调用是没有意义的。
+
+#### 128.如何创建守护线程？
+在调用start()方法之前调用setDaemon(true)方法。
+
+#### 129. 什么是线程的Callable和Future？code
+Callable类似于Runnable，Callable执行后可以返回值，这个值可以被Future拿到。<br>
+适用于复杂的计算，主线程开启子线程去执行计算，用future获取计算结果。
+
+#### 130. servlet的生命周期？tomcat servlet生命周期？tomcat如何创建servlet类实例？
+加载--实例化--服务--销毁<br>
+init()：在servlet的生命周期中仅执行一次init()。在服务器装入servlet的时候执行，负责初始化servlet对象。<br>
+service()：servlet的核心，负责响应客户端的请求。每当一个客户端请求一个HttpServlet对象，该对象的service()方法就被调用，并且传递给这个方法一个请求对象（ServletRequest）和一个响应对象（ServletResponse）作为参数。<br>
+destroy()：仅执行一次，在服务端停止且卸载servlet时执行。
+
+(1) 加载servlet。Tomcat负责创建servlet的实例。<br>
+(2) 初始化。Servlet被实例化后，tomcat调用其init()方法初始化这个对象。<br>
+(3) 处理服务。浏览器访问的时候，servlet会调用service()方法处理请求。<br>
+(4) 销毁。Tomcat关闭时或者检测到servlet要从tomcat删除的时候自动调用destroy()方法，让该实例释放占用的资源。一个servlet如果长时间不被使用的话，也会被tomcat自动销毁。<br>
+(5) 卸载。Servlet调用完destroy()方法后，等待垃圾回收，如果需要再次使用，会重新调用init()方法进行初始化。
+
+容器启动时，读取webapps目录下所有应用的web.xml文件，进行解析，得到servlet注册信息。然后将每个应用中注册的servlet类都进行加载，并通过反射的方式实例化。<br>
+在servlet注册时，如果<load-on-startup>1</load-on-startup>为正数，则一开始就实例化，不写或为负数则第一次请求才实例化。
+
 
 
 
