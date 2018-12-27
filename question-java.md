@@ -485,6 +485,168 @@ spring容器能够自动装配相互合作的bean。<br>
 (4) constructor：和byType类似<br>
 (5) autodetect：如果有默认的构造函数，则通过constructor的方式，否则通过byType的方式<br>
 
+#### 81. Spring支持的事务管理类型？
+(1) 编程式事务管理：通过编程的方式管理事务，灵活，但难维护<br>
+(2) 声明式事务管理：将业务代码和事务管理分离，只需用注解和XML配置来管理
+
+#### 82. Spring的BeanFactory和ApplicationContext的区别？
+BeanFactory是spring IoC的具体实现，提供了一种先进的配置机制，能配置任何类型的对象。<br>
+ApplicationContext对BeanFactory进行扩展，添加了其他功能，如国际化、统一的资源文件读取方式。<br>
+三种常见的ApplicationContext实现方式：<br>
+(1) ClassPathXmlApplicationContext<br>
+(2) FileSystemXmlApplicationContext<br>
+(3) XmlWebApplicationContext
+
+#### 83. Spring中使用的设计模式？
+(1) 代理模式：AOP<br>
+(2) 单例模式：实例化的bean默认是singleton的<br>
+(3) 工厂模式：BeanFactory用来创建对象的实例<br>
+(4) 模板方法：用来解决代码重复的问题，如RestTemplate
+
+#### 84. Spring的依赖注入（DI，Dependency Injection）和控制反转（IoC，Inversion of Control Container）？
+依赖注入：在运行时将类的依赖注入到代码中，将依赖定义为接口，将实现了这个接口的实体类注入到主类的构造器中。<br>
+依赖注入可以通过单一责任原则来提高代码的内聚，因为依赖的对象通常都是能独立完成一个功能的对象。<br>
+控制反转容器：一个支持依赖注入的中心容器，如spring框架，定义哪个依赖应该使用哪个实体类。<br>
+不实际生成对象，而是定义如何生成对象。<br>
+依赖注入和控制反转能够在运行时绑定类之间的关系，而不是编译时。<br>
+松耦合也更易于单元测试。
+
+#### 85. Hibernate的SessionFactory和Session是线程安全的吗？SessionFactory如何保证线程安全？？？
+SessionFactory是线程安全的，Session不是。<br>
+Session表示与数据库交互的一个单元，由SessionFactory创建。<br>
+为避免创建太多session，可用ThreadLocal将session将当前线程绑定在一起，同一个线程获得的都是同一个session（Hibernate 3中SessionFactory的getCurrentSession()方法）
+
+#### 86. Hibernate实体对象的三种状态（四种）？
+瞬时态、持久态、游离态、移除态<br>
+(1) 瞬时态（new/transient）：new一个实体对象后，处于瞬时态，只是保存在内存中，如果没有变量引用则会被垃圾回收机制回收，可以通过Session的save()、saveOrUpdate()、persist()、merge()插入到数据库中，变成持久态<br>
+(2) 持久态（managed/persistent）：在数据库中有对应的记录，并拥有一个持久化标识（ID）。对持久态的对象执行delete后，会将数据库对应的记录删除，持久态变成移除态（或瞬时态）。持久态对象修改后，事务提交才会更新到数据库。<br>
+(3) 游离态（detached）：session进行close、clear、evict、flush后，实体对象从持久态变成游离态
+
+#### 87. 如何理解Hibernate的延迟加载机制？如何处理延迟加载和session关闭的矛盾？
+不是在读取的时候就把数据加载进来，而是在实际使用的时候再加载。<br>
+Hibernate使用虚拟代理的机制实现延迟加载，使用session的load方法，或者一对多的映射关系一的一方加载多的一方，得到的都是虚拟代理，返回的不是实体本身，而是实体对象的代理，代理对象在被调用getter方法的时候才会从数据库加载数据。<br>
+
+加载数据需要连接数据库，而session关闭后相当于断开了数据库连接，二者存在矛盾。<br>
+延迟加载和session关闭的矛盾处理方式：<br>
+(1) 关闭延迟加载<br>
+       较简单。但出现这种矛盾说明存在外键关联，关闭延迟加载的话查询的开销会很大。<br>
+(2) 在session关闭之前获取需要查询的数据<br>
+       使用hibernate的isInitialized方法判断对象是否已经加载，如果未加载则使用<br>
+       initialize方法、加载对象。<br>
+(3) 使用拦截器或过滤器延长session的生命周期直到视图获得数据
+
+#### 88. Hibernate的一级缓存、二级缓存和查询缓存？
+(1) 一级缓存<br>
+默认开启。修改持久化实体时不会立即提交到数据库，而是缓存在当前session中, 除非显式调用session的flush方法，通过这种方式可以减少与数据库的交互，提高程序性能。<br>
+(2) 二级缓存<br>
+默认关闭。开启并设置需要使用二级缓存的实体类，SessionFactory就会缓存访问过得实体类的每个对象。<br>
+(3) 查询缓存<br>
+默认关闭。一级缓存和二级缓存都是对整个实体进行缓存，如果需要缓存普通属性,可以使用查询缓存。查询缓存将HQL和SQL语句及查询结果作为键值对进行缓存，对于同样的查询可以从缓存中获取。
+
+#### 89. Hibernate的SessionFactory的openSession和getCurrentSession的区别？
+openSession | getCurrentSession
+-|-
+得到一个新的session对象 | 得到一个和当前线程绑定的session对象
+需要手动关闭，手动提交 | 事务回滚或提交时自动关闭
+不需要配置 | 需要配置<br>&lt;property name="current_session_context_class"&gt;thread&lt;/property&gt;
+
+#### 90. Spring如何使用ThreadLocal解决线程安全问题？
+ThreadLocal是线程的一个本地化对象。多线程环境的对象使用ThreadLocal维护变量时，为每个线程分配一个变量副本，每个线程可以独立的改变自己的副本，相当于线程的本地变量。<br>
+ThreadLocal类中有一个内部类ThreadLocalMap，key为线程对象，value为线程的变量副本。<br>
+数据连接和会话一般是非线程安全的，
+
+#### 91. 什么是XSS攻击和CSRF攻击？
+XSS（Cross Site Script）跨站脚本，向网页中注入恶意脚本，用户浏览网页时在用户浏览器中执行。反射型：诱使用户点击含有恶意脚本的链接；持久型：将脚本提交到网站的数据库中，用户访问时从数据库加载到页面中执行。<br>
+防范：<br>
+(1) 对危险字符进行http转义<br>
+(2) 使用HttpOnly，cookie对浏览器不可见。<br>
+
+CSRF（Cross Site Request Forgery）跨站请求伪造，通过跨站的请求，以合法的身份进行非法的操作。原理是利用浏览器的cookie或服务器的session窃取用户身份。<br>
+防范：<br>
+(1) 在表单中添加token令牌<br>
+(2) 验证码<br>
+(3) 检查请求头中的Referer，Referer是http请求头的一个属性，表明请求来自哪里。
+
+#### 92. 时间处理类SimpleDateFormat非线程安全，用ThreadLocal封装成线程安全。
+SimpleDateFormat内部引用了一个Calendar对象来处理时间，parse方法有一个clear的操作和一个getTime的操作，多线程环境下不同线程如果共享一个SimpleDateFormat对象，调用parsr方法时在clear和getTime之间就会存在冲突。<br>
+项目实例：<br>
+一个并发较大的接口服务，使用账号+秘钥+时间戳做身份和权限认证，认证的中间件接口定义了一个SimpleDateFormat单例，用于检查时间戳和系统当前时间的差，并发情况下得到的时间差不正确。
+
+#### 93. 垃圾回收Serial GC和Parallel GC的区别？Minor GC、Major GC、Full GC的区别？并行收集器和并发收集器？
+都会引起stop-the-world。<br>
+Serial是默认的收集器，执行GC的时候只有一个线程；<br>
+Parallel收集器使用多个线程。<br>
+可以通过JVM参数设置：-XX:+UseSerialGC，或者：-XX:+UseParNewGC<br>
+
+Minor GC：从年轻代空间（包括Eden和Survivor）回收内存，不会影响到永久代。<br>
+Major GC：清理老年代，由Full GC触发，也会引起stop-the-world。<br>
+Full GC：清理整个堆空间，包括年轻代和老年代。<br>
+
+Minor GC触发条件：Eden区满。<br>
+Full GC触发条件：<br>
+(1) 调用System.gc()，系统建议执行Full GC，但不一定会执行。<br>
+(2) 老年代空间不足<br>
+(3) 方法区空间不足<br>
+(4) 通过Minor GC后进入老年代的平均大小>老年代的可用空间<br>
+(5) 由Eden区、From Space区向To Space区复制时，对象大小>To Space区可用空间，则把该对象转到老年代，且老年代可用的空间小于该对象大小。<br>
+
+并行收集器（Parallel Collector, Throughput Collector）：使用多线程的方式，利用多CPU提高GC的效率，以达到一定吞吐量为目标。<br>
+并发收集器（Concurrent Low Pause Colllector）：？？？<br>
+CMS收集器（Concurrent Mark Sweep，老年代收集器）：以获取最短回收停顿时间为目的，基于标记-清除算法。
+
+#### 94. Socket服务端、客户端实例。code
+
+#### 95. 多线程编程的最佳实践？
+(1) 给线程命名<br>
+(2) 最小化同步的范围，而不是对整个方法同步<br>
+(3) 优先使用volatile，而不是synchronized<br>
+(4) 使用更高层次的并发工具进行线程间通信，而不是wait()和notify()，比如BlockingQueue、CountDownLatch、Semeaphore<br>
+(5) 优先使用并发集合，而不是对集合进行同步。并发集合提供更好的扩展性。<br>
+(6) 使用线程池
+
+#### 96. 使用Collections的最佳实践？
+(1) 使用正确的集合类，比如不需要同步列表时，使用ArrayList而不是Vector。<br>
+(2) 优先使用并发集合，而不是对集合进行同步。<br>
+(3) 使用接口代表和访问集合，比如用List存储ArrayList，用Map存储HashMap。<br>
+(4) 使用迭代器循环集合。<br>
+(5) 使用泛型，类型安全、可读性、健壮性，避免运行时的ClassCastException。<br>
+(6) 元素个数固定且事先知道，应该用Array而不是ArrayList。<br>
+(7) 指定容器初始容量，避免重新计算hash或者扩容。<br>
+(8) 使用JKD的不变类（immutable class）作为Map的key值，避免自己定义的类去实现hashCode()和equals()方法。<br>
+(9) 容器为空的时候返回长度是0的集合或者数组，不要返回null。
+
+#### 97. volatile和synchronized的比较
+线程安全包括两个方面：原子性和可见性<br>
+锁提供了两种特性：互斥和可见性<br>
+多线程环境下内存可分成主内存和线程的本地内存，线程执行时，将变量从主内存读到本地内存，操作后，在某一时间将变量写回主内存。为了加快速度，写回主内存之前可能先在寄存器或CPU缓存上进行，这时变量的新值对其他线程是不可见的。<br>
+Volatile修饰的变量修改时，会将缓存中的修改前的值清除。告知JVM寄存器中的值是不确定的，需要从主内存中读取
+
+volatile | synchronized
+-|-
+轻量级，只能修饰变量 | 重量级，可修饰变量、方法
+只能保证可见性 | 能保证可见性和原子性
+不会造成线程阻塞 | 可能造成线程阻塞
+
+#### 98. CAS同步非阻塞的无锁算法？
+CAS是乐观锁技术，当多个线程尝试使用CAS同时更新一个变量时，只有一个能成功更新，其他都失败，失败的线程不会挂起，可以再次尝试。<br>
+CAS有三个操作数，内存值V，预期的旧值A，新值B，仅当内存值等于预期的旧值时，才会将值更新为新值B，否则什么都不做。<br>
+当同步出现冲突的机会很小时，这种机制相较于synchronize能提高性能。<br>
+CAS是CPU指令级的操作，只有一步原子操作。
+
+应用：java.util.concurrent.atomic中的类，如AtomicInteger的自增操作，可调用incrementAndGet方法。<br>
+CAS实现原子操作的三个问题：<br>
+(1) ABA问题。CAS算法在操作值的时候检查有没有变化，没有变化则更新，但一个值从A变成B，再变回A，则检查不出有变化。解决办法是使用版本号：1A->2B->3A<br>
+(2) 循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。<br>
+(3) 只能保证一个共享变量的原子操作。Java 1.5开始JDK提供了AtomicReference类来保证对象引用间的原子性，可以把多个变量放进一个对象中进行CAS操作。
+
+#### 99. 线程的start方法和run方法的区别？
+start方法用来启动新创建的线程，内部调用了run方法。<br>
+调用run方法的时候，只是在原来的线程中调用，没有启动新的线程。
+
+#### 100. 什么是竞态条件（Race Condition）？
+计算的正确性取决于多个线程的交替执行时序时，就会发生竞态条件。<br>
+导致竞争条件的区域称为临界区（Critical Section）。<br>
+最常见的竞态条件是先检测后执行，比如单例模式的懒汉式实现，先检测实例是否存在，再实例化。
 
 
 
@@ -504,4 +666,4 @@ spring容器能够自动装配相互合作的bean。<br>
 
 
 
-##### 100. question100
+##### 200. question100
