@@ -955,6 +955,277 @@ WAITING：等待状态，进入该状态表示线程需要其他线程做出一�
 TIME_WAITING：超时等待状态，不同于WAITING，可以在指定的时间内自行返回。<br>
 TERMINATED：终止状态，表示线程已执行完毕。<br>
 
+#### 151. Https加密方式？Tomcat如何实现https？？
+对称加密和非对称加密。<br>
+公钥、私钥。<br>
+
+#### 152. Float类型的变量定义float f = 2.3;是否正确？
+不正确。精度不准确，应该加强制类型转换，float f = (float)2.3;或者float f = 2.3f;<br>
+没加小数点默认是int，有加小数点默认是double。
+
+#### 153. 类装载的显式方式和隐式方式？
+隐式装载，程序运行时遇到new方式创建对象时，隐式调用类装载器加载对应的类到JVM中。<br>
+显式装载，class.forName();显式加载需要的类。
+
+#### 154. String编码UTF-8和GBK的区别？？？
+
+#### 155. Java垃圾回收的算法？<br>
+(1) 标记回收法。遍历对象图并记录可到达的对象，以便删除不可到达的对象，一般使用单线程工作，可能产生内存碎片。<br>
+(2) 标记-压缩回收法。前期和第一种算法一样，多了一步，将所有存活的对象压缩到内存的一端，这样内存碎片就可以合成一大片可再利用的内存区域，提高了内存利用率。<br>
+(3) 复制回收法。将现有内存分成两部分，GC的时候将可到达的对象复制到另一半空间，清空正在使用的一半空间的全部对象。可用的内存只有一半。适合短生存期的对象，持续复制长生存期的对象会导致效率降低。<br>
+(4) 分代回收法。将内存空间分成两个或多个区域，如年轻代和老年代。年轻代的特点是对象很快会被回收，因此使用效率较高的算法。当一个对象经过几次回收后仍然存活，就会被放入老年代，老年代使用标记-压缩算法。<br>
+(5) 引用计数法。最简单古老的的方法，将资源（对象、内存或磁盘空间）的被引用次数保存起来，引用次数为0的时候就释放。<br>
+(6) 对象引用遍历法。现在大多数jvm使用的算法，从一组根对象（GC Roots）开始，沿着整个对象图的每条链接，递归确定可到达（reachable）的对象，如果某个对象不能从这些根对象到达，则标记为回收。
+
+#### 156. String编码UTF-8和GBK的区别？code
+UTF-8包含了很多国家的字符，涵盖了整个unicode码表，存储一个字符的编码使用长度不确定，1~4个字节；GBK只包含中文的编码，只需要固定的2个字节，能表示6万多个字符。<br>
+Java中的string使用的是unicode编码，而UTF-8和GBK是编码格式，string只存在内存中，没有存在文件中或在网络中传输（序列化）时，只有编码，没有编码格式。
+
+#### 157. 面向对象的四大基本特性？
+封装：可以使类具有独立性和隔离性；保证类的高内聚。只暴露给外部和子类必须的属性和操作。类封装的实现依赖类的修饰符public、protected、private等。<br>
+继承：对现有类的一种复用机制。一个类如果继承现有的类，则将拥有被继承类的所有非私有属性和操作。继承包括类的继承和接口的实现。<br>
+多态：多态实在继承的基础上实现的。多态的三个要素：继承、重写、父类引用指向子类对象。父类引用指向不同的子类对象时，调用相同的方法，呈现不同的行为，就是多态的特性。多态可以分为编译时多态（方法重载）和运行时多态（方法重写）。<br>
+抽象：提取事物的关键特性，为事物建立模型的过程。得到的抽象模型中包含属性（数据）和操作（行为）。这个抽象模型称为类。
+
+#### 158. 面向对象的七大设计原则？
+SOLID原则（<br>
+&emsp;&emsp;单一职责原则：单一职责<br>
+&emsp;&emsp;开放关闭原则：对扩展开放，对修改封闭，实现热插拔，提高扩展性<br>
+&emsp;&emsp;里氏替换原则：实现抽象的规范，实现子类父类的相互替换<br>
+&emsp;&emsp;接口隔离原则：接口单独设计，降低耦合度<br>
+&emsp;&emsp;依赖倒置原则：针对接口编程<br>
+）<br>
+迪米特原则：不知道原则，功能模块尽量独立<br>
+组合优于继承原则（合成复用原则）：尽量使用聚合、组合，而不是继承
+
+#### 159. 计算-2>>1，-2>>>1
+\>>带符号右移，负数符号位补1，正数符号位补0；>>>无符号右移，正负数符号位都补0。<br>
+负数的二进制表示为正数取反加一，-2表示为1111 1111 1111 1111 1111 1111 1111 1110，带符号右移一位后为1111 1111 1111 1111 1111 1111 1111 1111，十进制为-1。<br>
+-2无符号右移一位后为0111 1111 1111 1111 1111 1111 1111 1111，即2^31-1
+
+#### 160. 内存中的栈（stack）、堆（heap）、方法区（method area）？
+栈保存基本数据类型变量、对象的引用、函数调用现场；<br>
+堆报错new关键字和构造器创建的对象，堆是垃圾收集的主要区域，可以分为新生代和老年代；<br>
+方法区和堆都是各个线程共享的内存区域，用于存储已经被JVM加载的类信息、常量、静态变量、JIT编辑器编译后的代码。<br>
+常量池是方法区的一部分。<br>
+栈空间操作起来最快但是空间很小，通常大量的对象都放在堆空间，栈和堆的大小可以通过JVM的启动参数来调整。<br>
+栈空间用完了会引发StackOverflowError，堆和常量池空间不足会引发OutOfMemoryError。
+
+#### 161. HashMap实现原理？
+&emsp;&emsp;Java中最常用的两种数据结构是数组和模拟引用（指针），几乎所有的数据结构都可以用这两种组合来实现。<br>
+&emsp;&emsp;HashMap是一种散列链表，有一个数组，数组中的每一个元素都是一个链表，链表中的每一个元素都是entry。<br>
+&emsp;&emsp;调用put(key, value)存储元素时，对key调用hashCode()方法，返回的hashCode用于找到bucket位置，存储entry对象。<br>
+&emsp;&emsp;两个key的hashCode相同时，bucket位置相同，会发生碰撞，这个包含有键值对的Map.Entry对象会存储在链表中。调用get()方法的时候，如果hashCode相同，找到bucket位置后会调用key.equals()方法在链表中找到正确的节点。<br>
+&emsp;&emsp;有几个重要特性，容量（capacity，默认值为16）、负载因子（load factor，默认值为0.75）、扩容极限（threshold resizing），元素个数大于capacity*load factor的时候会扩容为2n。
+
+#### 162. Java内存模型的PermGen（永久代）和Metaspace（元空间）？code
+HotSpot虚拟机使用PermGen来实现方法区，方法区是虚拟机的一个规范。<br>
+永久代主要存放类定义、字节码和常量等很少会变更的信息。<br>
+永久代也是会被回收，如果满了或者超过临界值，会触发Full GC。<br>
+从JDK 1.8开始，HotSpot虚拟机取消PermGen，取而代之的是Metaspace（元空间）。字符串常量从永久代转移到堆内存中。<br>
+元空间和永久代都是对方法区的实现，不同的是元空间不在虚拟机中，而是使用本地内存，默认情况下，元空间只受本地内存大小限制。
+
+#### 163. AQS队列同步器？
+全称是AbstractQueuedSychronizer，抽象队列同步器。<br>
+如果说CAS是java.util.concurrent的基础，那么AQS则是整个并法包的核心。<br>
+ReentrantLock、CountDownLatch、Semaphore等都用到了AQS。<br>
+以双向队列的形式连接所有的Entry，比如ReentrantLock，所有等待线程都放在一个Entry中并连成双向队列，前一个线程使用完ReentrantLock，则双向队列实际上的第一个Entry开始执行。<br>
+AQS定义了对双向队列的所有操作，只开放了tryLock和tryRelease给开发者重写。
+
+#### 164. 什么是ABA问题？JDK是如何解决的？
+question 98
+
+#### 165. 静态类和静态方法？静态内部类和非静态内部类？
+静态类都是静态内部类，没有静态的顶级类，顶级类的修饰只能是public、abstract、final。<br>
+静态方法只能访问静态成员，而实例方法可以访问静态成员和实例成员。<br>
+静态内部类不会持有外围类的引用，非静态内部类会隐式持有外围类的引用。<br>
+非静态内部类可以访问外围类的静态和非静态成员，不能脱离外围类被实体被创建。
+
+#### 166. 枚举类型？
+enum类型的构造方法只能是private或friendly，不能是public或protected，所以枚举对象不能再程序中通过调用其构造方法来初始化。<br>
+enum类型的值是通过运行时构造出对象来表示的，所以在cluster环境下，每个虚拟机会构造出一个同义的enum对象，可能出现同一个对象值不等的情况。
+
+#### 167. Set集合通过什么方法来判断元素相同？equals还是==？源码？
+
+#### 168. 反射中，Class.forName和classLoader的区别？加载数据库驱动为什么用Class.forName()？？？
+&emsp;&emsp;（question 147 类加载过程）<br>
+&emsp;&emsp;Class.forName(className);内部调用的是Class.forName(className, true, classLoader);第二个参数表示是否需要初始化（执行static代码块，设置static变量值），默认是true。<br>
+&emsp;&emsp;ClassLoader.loadClass(className);内部去调用的是ClassLoader.loadClass(className, false);第二个参数表示是否需要进行链接，默认为false。<br>
+&emsp;&emsp;动态加载一个类时，如果有静态代码块或静态变量，而且想在加载的时候初始化，应该使用Class.forName()。<br>
+
+&emsp;&emsp;DriverManager中有一段需要执行的static代码块，用Class.forName(“com.mysql.DriverManager”);调用才能令其执行。
+
+#### 169. ThreadLocal的设计理念和作用？使用场景？
+&emsp;&emsp;提供线程内的局部变量，在多线程环境下访问时能保证每个线程内的局部变量独立。<br>
+&emsp;&emsp;常用于以下场景：多线程环境下存在对非线程安全的对象的并发访问，而且该对象不需在线程间共享，也不想加锁，则可以用ThreadLocal来使得每个线程拥有这个对象的一个副本。<br>
+&emsp;&emsp;消除了竞态条件，不需要同步就保证了线程安全。<br>
+&emsp;&emsp;每个线程内部有一个ThreadLocal.ThreadLocalMap（ThreadLocal的静态内部类）类型的成员变量threadLocals，用来存储实际的变量副本，key是当前ThreadLocal变量，value是变量副本。<br>
+&emsp;&emsp;在web服务器中，工作线程的生命周期比应用变量的生命周期长，线程局部变量没有释放的话应用有内存泄露的风险。<br>
+&emsp;&emsp;ThreadLocalMap没有使用链表或红黑树解决hash冲突的问题，只用数组来维护哈希表，通过线性探测的开放地址法解决冲突。<br>
+
+&emsp;&emsp;使用场景：<br>
+&emsp;&emsp;web系统的session存储。Web容器采用线程隔离的多线程模型，一个请求一个线程，没有共享数据。请求到达时将session存储在ThreadLocal中，在请求过程中可以随意使用session，每个请求之间的session不相互影响。
+
+#### 170. 3个线程A、B、C，循环打印ABCABCABC......，使用进程间通信？？？code
+
+#### 171. JDK如何保证try-catch-finally中的finally块一定会被执行？？？
+
+#### 172. 线程池java.util.concurrent.ThreadPoolExecutor的实现原理？源码？和ExecutorService的关系？
+ThreadPoolExecutor继承自抽象类AbstractExecutorService，AbstractExecutorService实现了ExecutorService接口，ExecutorService接口继承自Executor接口。<br>
+不提倡直接使用ThreadPoolExecutor，而是使用Executors的newPool的方法创建一个ExecutorService。<br>
+
+构造函数的参数：<br>
+corePoolSize：线程池应该维护的最小线程数量。<br>
+maximumPoolSize：线程池中最大线程数。<br>
+keepAliveTime：线程没有执行任务时保持多长时间终止。<br>
+BlockingQueue<Runnable> workQueue：阻塞的任务队列，用来存储等待执行的任务。<br>
+threadFactory：线程工厂，用来创建线程<br>
+handler：当线程池和阻塞队列都满了，拒绝任务的策略。<br>
+&emsp;&emsp;AbortPolicy：丢弃任务并抛出RejectedExecutionException异常<br>
+&emsp;&emsp;DiscardPolicy：丢弃任务，但不抛出异常<br>
+&emsp;&emsp;DiscardOldestPolicy：丢弃队列最前面的任务，重新尝试执行<br>
+&emsp;&emsp;CallerRunsPolicy：由调用线程处理该任务<br>
+
+几个方法：<br>
+execute()：Executor中声明的方法，在ThreadPoolExecutor中实现，向线程池提交一个任务，由线程池去执行。<br>
+submit()：ExecutorServivce声明的方法，在AbstractThreadPoolExecutor中实现。和execute()方法类似，调用了execute()方法，可以使用Future来返回线程执行结果。<br>
+shutdown()：关闭线程池。<br>
+shutdownNow()：关闭线程池。
+
+定义了一个volatile变量runState，表示线程池的状态，volatile保证这个变量对所有线程可见。取值有0（RUNNING）、1（SHUTDOWN）、2（STOP）、3（TERMINATED）
+
+#### 173. 数组的length属性和字符串的length()方法？
+数组是一个容器对象，包含固定数量的同一类型的值，创建后长度固定，final的长度可以作为一个属性。<br>
+String的数据结构是一个char数组，长度已经在char数组的length属性中提供。
+
+#### 174. 调用线程start()方法和run()方法的区别？
+start()方法启动新创建的线程，使创建的线程的状态变成可运行状态。<br>
+调用run()方法的时候，只会在原来的线程中调用，没有创建新的线程，行为和普通的方法一样。
+
+#### 175. 多线程读写同一资源不同步的实例。code
+
+#### 176. Java内置锁synchronized可重入性？code
+可重入。某个线程试图获取一个由它自己持有的锁时，请求会成功。
+
+#### 177. 线程运行时发生异常会怎样？
+&emsp;&emsp;如果异常没有捕获线程将会停止执行。<br>
+&emsp;&emsp;Thread.UncaughtExceptionHandler是用于处理未捕获异常造成线程意外中断的一个内嵌接口，一个未捕获异常造成线程意外中断的时候，JVM会使用线程的Thread.getUncaughtExceptionHandler()来获取UncaughtExceptionHandler，并将线程和异常作为参数传递给handler的uncaughtException()方法处理。
+
+#### 178. 如何在线程间共享数据？？？
+通过共享对象，或者是阻塞队列这样的数据结构。
+
+#### 179. 什么是FutureTask？
+&emsp;&emsp;一个可以取消的异步运算。<br>
+&emsp;&emsp;运算结束的时候结果才能取回，如果未结束的时候调用get会阻塞。<br>
+&emsp;&emsp;实现了Runnable接口，可以通过线程池来执行，或传递给Thread对象执行。如果主线程遇到比较耗时的操作，又不想阻塞时，可以交给FutureTask执行，将结果返回。
+
+#### 180. ConcurrentHashMap的并发度是什么？实现原理？
+&emsp;&emsp;ConcurrentHashMap把map分成若干部分来实现可扩展性和线程安全，这种划分是使用并发度获得的，是构造函数的一个可选参数，默认值是16。<br>
+&emsp;&emsp;将一个map分为多个Hashtable，根据key.hashCode()决定将key放到哪个Hashtable中。<br>
+&emsp;&emsp;JDK 1.8中不再使用segment锁分离，而是使用乐观锁CAS算法来实现同步。底层还是数据+链表->红黑树。不需要对segment或者全局加锁，只需对单行加锁（hashCode相同）。对单个值的修改使用CAS。
+
+#### 181. 线程池ThreadPoolExecutor已满的时候，提交一个任务，会发生什么？question 172
+&emsp;&emsp;ThreadPoolExecutor的构造函数可以传入一个BlockingQueue workQueue。<br>
+&emsp;&emsp;如果使用的是无界队列LinkedBlockingQueue，近乎认为是无限大的队列，任务可以添加到阻塞队列中。<br>
+&emsp;&emsp;如果使用的是有界队列ArrayBlockingQueue，会使用拒绝策略RejectedExceptionHandler处理，默认是AbortPolicy，submit()方法将会抛出一个RejectedExecutionException。
+
+#### 182. Java线程池execute()方法和submit()方法的区别？？？
+execute() | submit()
+-|-
+/ | 都可以向线程池提交任务
+返回类型是void | 可以返回持有计算结果的FutureTask对象
+定义在Executor接口中 | 定义在ExecutorService接口中，扩展了Executor接口
+
+#### 183. 单例模式的各种实现方法？code
+(1) 懒汉式，线程不安全。多个线程可以实例化多个实例。<br>
+(2) 懒汉式，线程安全。对getInstance方法同步，效率低<br>
+(3) 饿汉式，基于classloader机制避免了多线程的同步问题，但没有达到lazy loading。<br>
+(4) 饿汉式，static代码块，同上。<br>
+(5) 静态内部类，同样利用了classloader机制保证实例化的时候只有一个线程，饿汉式中只要类被加载了，instance就会被实例化。这种方式类被加载了不会实例化instance，调用getInstance方法的时候才会状态内部类Holder。<br>
+(6) 枚举，JVM保证enum不能被反射且构造方法只执行一次<br>
+(7) DCL双检锁，（volatile避免初始化的时候指令重排？？？）
+
+#### 184. 阻塞队列BlockingQueue的作用？
+java.util.concurrent.BlockingQueue的特性是：队列是空的时，获取或删除元素的操作会被阻塞，队列是满的时，添加元素的操作会被阻塞。<br>
+不接受空值，添加空值时会抛出NullPointerException。<br>
+线程安全，所有的查询方法都是原子的。<br>
+主要用于实现生产-消费模型。
+
+#### 185. Spring有哪些优点？
+轻量级。<br>
+控制反转。注入依赖的对象，实现了松耦合。<br>
+面向切面编程。将业务逻辑和系统服务分离。<br>
+容器。管理对象的配置和生命周期。<br>
+MVC框架。<br>
+事务管理。统一的事务管理接口。<br>
+异常处理。将特定技术（如JDBC、Hibernate）的异常转化为一致的unchecked异常。
+
+#### 186. 如何在Spring中注入Java集合类？
+使用集合配置元素：<br>
+list元素：注入一系列的值，允许重复<br>
+set元素：注入一系列的值，不允许重复<br>
+map元素：注入一组键值对，键和值可以是任意类型<br>
+props元素：注入一组键值对，键和值都是字符串
+
+#### 187. Java代码优化实践？code
+
+#### 188. Tomcat如何实现并发？Connector运行模式？多线程？NIO模式的项目经验？？？
+自带的线程池，使用APR（Apache Portable Runtime）的Pool或Java的ThreadPool实现。<br>
+
+Connector有BIO、NIO、APR三种模式。<br>
+BIO：一个线程处理一个请求。传统的Java IO，同步且阻塞。<br>
+NIO：可以用少量的线程处理大量的请求。同步阻塞或同步非阻塞IO。<br>
+APR：tomcat以JNI的形式调用Apache HTTP服务器的核心动态链接库来处理文件读取或网络传输的操作，大大提高tomcat对静态文件的处理性能，从操作系统级别解决异步IO的问题。
+
+#### 189. String对象为什么不适合做锁对象？？？
+
+#### 190. equals()方法和==的区别？
+==比较两个对象的地址是否相同。<br>
+equals()可以重写，String类中比较的是字符串内容是否相同，如果没有重写，Object类中的实现是和==相同。
+
+#### 191. boolean类型的大小是多少？
+boolean类型的数据编译之后都使用int类型代替，boolean数据会被编译成byte数组，所以单独使用时占4个字节，在数组中时占1个字节。<br>
+使用int的原因是32位的CPU一次进行32位的数据交换更高效。
+
+#### 192.Object类定义了哪些方法？
+clone()<br>
+equals()<br>
+hashcode()<br>
+toString()<br>
+wait()<br>
+notify()<br>
+notifyAll()<br>
+finalize()<br>
+getClass()
+
+#### 193. Java动态绑定的内部实现机制？？？
+动态绑定是实现“多态”的关键。
+
+#### 194. ArrayBlockingQueue的原理和应用？
+实现了BlockingQueue接口。<br>
+一个基于数组实现的阻塞队列，构造需要指定容量。当试图向满队列添加元素或从空队列删除元素时，当前线程会被阻塞。
+
+#### 195. ExecutorService类的execute()方法和submit()方法的区别？？？
+
+### 196. Java能否创建volatile的数组？
+能，但只是修饰指向数组的引用，多个线程同时改变数组的元素，并不能起到保护作用。
+
+#### 197. 什么是多线程环境下的伪共享（false sharing）？
+&emsp;&emsp;缓存系统中是以缓存行（cache line）为单位存储区的，当多线程修改相互独立的变量时，如果这些变量共享同一个缓存行，会影响彼此的性能，这就是伪共享。<br>
+&emsp;&emsp;访问同一块内存区域时是共享，但这里应用程序要访问的独立的变量，是因为缓存行的存在才造成了共享，所以叫伪共享。<br>
+&emsp;&emsp;缓存行是2的整数幂个连续字节，一般为32~256字节，最常见的是64字节。<br>
+&emsp;&emsp;JDK 1.6中解决办法是使用缓存行填充，使一个对象占用的内存大小为64字节或整数倍，保证一个缓存行里不会有多个对象。<br>
+&emsp;&emsp;JDK 1.7会优化掉无用的字段。<br>
+&emsp;&emsp;JDK 1.8 缓存行填充被Java原生支持，添加@Contented注解会自动进行缓存行填充。
+
+#### 198. WeakHashMap的工作原理？
+和HashMap类似，但是使用弱引用作为key，当key对象没有任何引用时，key/value会被回收。
+
+#### 199. 32位/64位的操作系统？CPU？JVM？？？
+32位操作系统只能安装32wei的JVM，64位的操作系统两种JVM都可以安装。<br>
+只有Server VM支持64位，Client VM不支持。？？？
+
+#### 200.Java中的内存映射缓存区是什么？？？
 
 
 
@@ -969,8 +1240,4 @@ TERMINATED：终止状态，表示线程已执行完毕。<br>
 
 
 
-
-
-
-
-##### 200. question100
+##### 300. question300
