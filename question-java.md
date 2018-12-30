@@ -1315,6 +1315,212 @@ Enumeration | Iterator
 
 #### 220. Java 8，接口中可以有方法实现？？？
 
+#### 221. 静态变量和实例变量的区别？
+静态变量存储在方法区，实例变量存储在堆，其引用存储在当前线程栈中。
+
+#### 222. String对象的intern()方法？code
+先从常量池中查找是否存在该常量值，不存在则创建，已存在则直接返回。
+
+#### 223. hashCode()和equals()方法对于集合的作用？
+&emsp;&emsp;根据Java规范，equals()判断相等的两个对象，必须有相同的hashCode。<br>
+&emsp;&emsp;将对象放入集合的时候，先判断对象的hashCode在集合中是否已存在，不存在则直接放入，存在（hashCode相等，equals()不一定相等）则判断equals()方法和集合中的其他对象是否相等，都不相等则放入，否则不放入。
+
+#### 224. Java中的几种锁？
+&emsp;&emsp;自旋锁：JDK 1.6之后默认开启。基于之前的观察，共享数据的锁定时间很短，频繁挂起和恢复线程不太值得，所以让请求锁的线程不放弃处理器，而是做忙循环的自旋，看占有锁的线程能否很快释放。<br>
+&emsp;&emsp;偏向锁：消除数据在无竞争状态下的同步原语？？？进一步提升性能。偏向第一个获取它的线程，如果这个锁没有再被其他线程获得，则该线程永远不再需要同步。可以提高带有同步但无竞争的程序的性能。<br>
+&emsp;&emsp;轻量级锁：无锁->偏向锁->轻量级锁->重量级锁，随着竞争逐步升级，不能降级。
+
+#### 225. LinkedHashMap和PriorityQueue的区别？
+PriortyQueue是优先级队列，保证优先级最高或最低的元素在队头。<br>
+LinkedHashMap维护的是元素插入的顺序。
+
+#### 226. JVM的内存分配规则？
+(1) 基本数据类型和对象的引用在栈分配。<br>
+(2) 堆内存存放new的对象和数据，不一定是连续的，通过哈希算法得到一串数字，表示其地址。<br>
+(3) 程序加载的时候就在堆中为类变量分配内存，堆中的内存地址放在栈中。<br>
+(4) 局部变量，执行的时候在栈中分配内存，脱离了作用域立即回收。
+
+#### 227. Java 7、8、9、10的新特性？？？
+Java 7新特性：<br>
+(1) try-with-resource语句，使用流或者资源的时候不用手动关闭，Java会自动关闭。<br>
+(2) Fork-Join，实现了Java版的Map-Reduce。<br>
+(3) switch可以用String或文本。（用String.hashCode()将String转为int）<br>
+(4) 菱形操作符用于类型推断？？？<br>
+
+Java 8新特性：<br>
+(1) Lambda表达式，允许像对象一样传递匿名函数<br>
+(2) Stream API，充分利用现代多核CPU，可以写出很简洁的代码<br><br>
+(3) Optional类，解决空指针异常？？？<br>
+(4) Date和Time API，线程安全吗？？？<br>
+(5) 扩展方法，接口中可以有静态、默认方法？？？带有实现的方法？？？<br>
+(6) 重复注解，相同的注解在同一类型上多次使用。<br>
+
+Java 9新特性：<br>
+(1) Jigsaw项目，模块化源码<br><br>
+(2) 轻量级JSON API<br>
+(3) 钱和货币的API<br>
+(4) HTTP 2.0客户端<br>
+(5) 默认GC修改为更复杂、更全面、性能更好的G1（Garbage-First）。？？？<br>
+
+Java 10新特性：<br>
+(1) 本地变量类型推断<br>
+(2) 统一JDK仓库<br>
+(3) 垃圾回收器接口<br>
+(4)
+
+#### 228.Tomcat原理？
+由两个模块协同合作，Connector和Container。<br>
+Connector负责解析HTTP请求，生成HttpRequest和HttpResponse后交给Container，由它调用响应的servlet。<br>
+Tomcat默认的Container为HttpContainer。<br>
+Tomcat启动后会开启一个线程，做死循环，通过ServerSocket来等待请求，得到请求后生成socket，交给HttpProcessor处理。每个processor处理都是一个单独的线程。（多个processor就实现了多线程？？？）<br>
+
+四个Container：<br>
+Engine：最顶层的容器，可以包含多个Host<br>
+Host：代表一个虚拟主机，可以包含多个Context<br>
+Context：代表一个web应用，也就是ServletContext，可以包含多个Wrapper<br>
+Wrapper：代表一个servlet，不能再包含其他容器，最底层。
+
+#### 229. 对象创建的流程？堆内存分配方式？《深入理解Java虚拟机》
+(1) 检查指令的参数能否在常量池中定位到一个类的符号引用<br>
+(2) 检查是否已经加载解析和初始化<br>
+(3) 从堆内存中划分区域分配给新生对象，使用CAS+失败重试保证分配的原子性（分配内存、修改指针，操作不是原子性的）<br>
+(4) 将内存空间初始化为零值<br>
+(5) 设置，类名、类的元数据、对象的hashCode、对象的GC分代等<br>
+(6) 执行<init>方法
+
+指针碰撞：堆内存是规整的，用过的在左边，没用过的在右边，中间指针指向临界点，则只需向右移动指针即可。<br>
+空闲列表：堆内存不规整，需要维护一个列表记录可用的内存块，分配时从列表中找出一块足够大的区域。
+
+#### 230. 对象的内存布局？？？《深入理解Java虚拟机》
+对象头、实例数据、对齐填充
+
+#### 231. Class类文件的结构？《深入理解Java虚拟机》
+魔数与Class文件的版本<br>
+常量池<br>
+访问标志<br>
+类索引、父类索引、接口索引集合<br>
+字段表集合<br>
+方法表集合<br>
+属性表集合
+
+#### 232. Tomcat堆内存大小设置？默认大小？
+windows系统：catalina.bat，linux系统：catalina.sh<br>
+set JAVA_OPTS = -server -Xms512m -Xmx1024m<br>
+默认为128m。<br>
+JVM默认的最大最小堆内存分别是物理内存的1/4和1/64。
+
+#### 233. 红黑树、AVL树、B树、B+树、优先级堆？平衡二叉树、完全二叉树、满二叉树
+完全二叉树：只有最下面的两层节点度小于2，且最下面一层的节点集中在最左边。<br>
+满二叉树：除了叶子节点外每个节点都有左右子节点，且叶子节点在最底层。<br>
+满二叉树一定是完全二叉树，完全二叉树不一定是满二叉树。<br>
+平衡二叉树（AVL树）：空树，或者是一棵二叉查找树，且左右两棵子树的高度差不超过1，并且左右两棵子树也是平衡二叉树。<br>
+红黑树：根节点和叶子结点（NIL或空节点）是黑色的，每个红色节点的子节点都是黑色的，从任一节点到其每个叶子节点的路径上包含相同数据的黑色节点。<br>
+B树：用于数据库索引和磁盘文件组织数据索引<br>
+(1) 每个节点最多有m个子节点<br>
+(2) 除根节点和叶子节点外，每个节点至少有m/2个子节点<br>
+(3) 若根节点不是叶子节点，则至少有2个子节点<br>
+(4) 所有叶子节点在同一层，不包含key<br>
+(5) 有k个子节点的非叶子结点恰好包含k-1个key
+
+#### 234. Spring初始化bean的过程？
+(1) 容器寻找bean的定义信息并实例化<br>
+(2) 使用依赖注入，按照bean定义信息配置其属性<br>
+(3) 如果实现了BeanNameAware接口，调用bean的setBeanName()方法传递bean的id<br>
+(4) 如果实现了BeanFactoryAware接口，调用setBeanFactory()方法传入工厂自身<br>
+(5) 如果BeanPostProcessor和bean关联，调用postProcessBeforeInitialization()方法<br>
+(6) 如果bean指定了init-method方法，将被调用
+
+#### 235.HashMap通过for循环remove为什么会报ConcurrentModificationException？
+HashMap中有modCount和expectedModCount的比较，for循环删除没有对modCount进行更新，导致expectedModCount == modCount不成立，抛出异常。<br>
+Iterator在remove时实现了对modCount的同步，所以不会抛出异常。
+
+#### 236. Hibernate工作流程？
+(1) 读取并解析配置文件（Configuration对象，hibernate.cfg.xml，\*.hbm.xml）<br>
+(2) 读取并解析映射信息，创建SessionFactory（单例）<br>
+(3) 打开Session（openSession()，getCurrentSession()，两种方式，question89）<br>
+(4) 创建事务Transaction<br>
+(5) 持久化操作<br>
+(6) 提交事务<br>
+(7) 关闭Session<br>
+(8) 关闭SessionFactory
+
+#### 237. Hibernate的查询方式有哪些？
+(1) 对象导航查询<br>
+(2) HQL查询<br>
+ 	   属性，参数，关联，分页，统计<br>
+(3) Criteria查询<br>
+(4) SQLQuery本地SQL查询<br>
+
+#### 238. Hibernate关联关系？inverse属性？
+关联关系有many-to-one，one-to-many，many-to-many。<br>
+
+inverse属性的作用是让对方来维护关联管理，默认值是false，即双方都维护。<br>
+如果是多对多的关系，建议只由一方来维护。<br>
+如果是一对多的关系，只能由“一”的一方来维护。<br>
+
+#### 239. Hibernate的get()和load()的区别？save()、update()、merge()、persist()、saveOrUpdate()？
+get() | load()
+-|-
+立即查询 | 懒加载
+没有找到会返回null | 没有找到会抛出异常
+先查一级缓存，再查二级缓存，然后查数据库 | 先查一级缓存，没有找到就创建代理对象，等需要的时候去查二级缓存和数据库
+
+save()和update？<br>
+save()的作用是把一个新的对象保存。<br>
+update()是把一个脱管状态的对象或自由态对象更新到数据库。
+
+#### 240. Hibernate的主键生成策略有哪些？
+(1) identity自增长（MySQL，DB2）<br>
+(2) Sequence自增长序列（Oracle）<br>
+(3) Native自增长（根据底层数据库自增长的方式选择identity或sequence）<br>
+(4) Increment自增长（在集群中使用会有并发的问题）<br>
+(5) 手动指定主键，assigned<br>
+(6) UUID生成<br>
+(7) Foreign外键
+
+#### 241. 为什么Hibernate的实体类需要提供一个无参数的构造函数？
+Hibernate框架使用Reflection API，通过Class.newInstance()来创建实体类的实例，如果找不到无参数的构造函数，会抛出InstantiationException异常。
+
+#### 242. Spring如何解决类循环依赖？
+(1) setter对象的依赖。<br>
+&emsp;&emsp;A类需要设置B类，B类需要设置C类，C类需要设置A类，形成循环。<br>
+&emsp;&emsp;Spring的解决方案是，初始化A类的时间将Bean放入缓存中，然后set B类，再把B类的Bean放入缓存中，然后set C类，初始化C类的时候需要A类的Bean，这是不需要初始化，从缓存中获取。<br>
+&emsp;&emsp;这种只对single的Bean起作用，因为prototype的Bean不做缓存。<br>
+(2) 构造器中对其他类的依赖。<br>
+&emsp;&emsp;创建A类需要在构造器中初始化B类，创建B类需要在构造器中初始化C类，创建C类需要在构造器中初始化A类，形成循环。<br>
+&emsp;&emsp;Spring的解决方案是，把创建中的Bean放入到一个“当前创建Bean池”中，初始化类的时候如果发现Bean类已经存在，抛出BeanCurrentInCreationException异常。
+
+#### 243. ThreadLocal内存泄露问题？
+&emsp;&emsp;ThreadLocal有一个ThreadLocalMap的内部类，由一个个Entry组成，Entry继承自WeakReference<ThreadLocal<?>>，一个Entry由Threadlocal（key，弱引用）和Object构成，没有指向key的强引用时，key就会被回收。<br>
+&emsp;&emsp;Key是弱引用，但value是强引用，当线程的ThreadLocal使用完，没有强引用指向key时，key的对象会被回收，变成null，但value和value指向的对象仍是强引用关系，不会被回收。<br>
+&emsp;&emsp;每次调用ThreadLocal的get，set，remove方法时，会将key为null的Entry删除，避免内存泄露。但如果将对象放入ThreadLocalMap后就不再调用这些方法，仍可能导致内存泄露，需要在使用完ThreadLocal后手动remove。
+
+#### 244. 父类、子类、static修饰执行顺序？
+(1) 父类静态变量和静态代码块<br>
+(2) 子类静态变量和静态代码块<br>
+(3) 父类成员变量和非静态代码块<br>
+(4) 父类构造方法<br>
+(5) 子类成员变量和非静态代码块<br>
+(6) 类构造方法
+
+#### 245. request.getAttribute()和request.getParameter()有什么区别？
+getParameter()通过容器的实现来取得通过类似post、get等方式传入的数据。<br>
+getAttribute()和setAttribute()只在web容器内部流转，仅是处理请求阶段。<br>
+getAttribute()返回对象，getParameter()返回字符串。<br>
+getAttribute()和setAttribute()一起使用，先set才能get，在同一个request中才有效。<br>
+getParameter()接收表单的get或post传递过来的参数。<br>
+
+#### 246. JDO是什么？
+JDO是Java对象持久化的新规范，Java Data Object的简称，一个用于存取某种数据仓库中的对象的标准化API。<br>
+JDO提供了透明的对象存储，对于开发者来说存储对象不需要额外的代码（如JDBC），由JDO产品提供商提供。<br>
+JDBC只面向关系型数据库，JDO更通用，提供到任何数据底层的存储功能，比如关系型数据库、文件、XML以及对象数据库，可移植性更强。
+
+
+
+
+
+
+
 
 
 
