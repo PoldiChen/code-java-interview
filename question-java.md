@@ -1188,15 +1188,22 @@ boolean类型的数据编译之后都使用int类型代替，boolean数据会被
 使用int的原因是32位的CPU一次进行32位的数据交换更高效。
 
 #### 192.Object类定义了哪些方法？
-clone()<br>
-equals()<br>
-hashcode()<br>
-toString()<br>
-wait()<br>
-notify()<br>
-notifyAll()<br>
-finalize()<br>
-getClass()
+&emsp;&emsp;clone()：native方法，用于创建并返回当前对象的一份拷贝。一般情况下，对于任何对
+象x，x.clone() != x为true，x.clone().getClass() == x.getClass()为true。Object本身没有实现Cloneable接口，所以不重写clone方法且进行调用的话会抛出CloneNotSupportedException异常。<br>
+&emsp;&emsp;equals()：用于比较两个对象的内存地址是否相等，String类对该方法进行了重写所以比
+较的是字符串的值是否相等。<br>
+&emsp;&emsp;hashcode()：native方法，用于返回对象的hash码，主要使用在哈希表中，比如JDK中
+的HashMap。<br>
+&emsp;&emsp;toString()：返回类的名字@对象的哈希码的十六进制字符串。建议Object的所有子类都
+重写这个方法。<br>
+&emsp;&emsp;wait()：native方法，不能重写。暂停线程的执行。sleep方法没有释放锁，wait方法释
+放了锁。<br>
+&emsp;&emsp;notify()：native方法，不能重写。唤醒一个在此对象监视器（相当于锁的概念）上等待
+的线程，如果有多个线程在等待只会唤醒一个。<br>
+&emsp;&emsp;notifyAll()：native方法，不能重写。和notify一样，唯一区别是唤醒所有等待的线程。<br>
+&emsp;&emsp;finalize()：对象被垃圾回收器回收时触发的操作。<br>
+&emsp;&emsp;getClass()；native方法，用于返回当前运行时对象的Class对象，使用了final关键字修
+饰，不允许子类重写。
 
 #### 193. Java动态绑定的内部实现机制？？？
 动态绑定是实现“多态”的关键。
@@ -1514,6 +1521,14 @@ getParameter()接收表单的get或post传递过来的参数。<br>
 JDO是Java对象持久化的新规范，Java Data Object的简称，一个用于存取某种数据仓库中的对象的标准化API。<br>
 JDO提供了透明的对象存储，对于开发者来说存储对象不需要额外的代码（如JDBC），由JDO产品提供商提供。<br>
 JDBC只面向关系型数据库，JDO更通用，提供到任何数据底层的存储功能，比如关系型数据库、文件、XML以及对象数据库，可移植性更强。
+
+#### 247. hashCode()和equals()的相关规定？
+(1)	两个对象相等，则hashcode一定相同<br>
+(2)	两个对象有相同的hashcode，不一定相等<br>
+(3)	两个对象相等，则分别调用equals()返回true<br>
+(4)	如果equals()方法被重写，则hashcode()方法也必须重写<br>
+(5)	hashCode()的默认行为是对堆上的对象产生独特值，如果没有重写，则类的两个对象无论如何都不会相等。
+
 
 
 
