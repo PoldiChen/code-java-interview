@@ -16,9 +16,9 @@ ListIterator实现了Iterator接口，并包含其他功能，比如增加元素
 Java提供了显式监视器（Lock）和隐式监视器（synchronized）两种锁方案。？？？<br>
 
 #### 4. 为什么集合类没有实现Cloneable和Serializable接口？
-克隆(cloning)或者是序列化(serialization)的语义和含义是跟具体的实现相关的。因此，应该由集合类的具体实现来决定如何被克隆或者是序列化。<br>
-Collection接口指定一组对象，对象即是它的元素，如何维护这些元素由Collection的具体实现决定，比如List的元素允许重复而Set不允许。Collection只是一个抽象表现。<br>
-涉及到具体实现时，clone和serialize的语义和含义才发挥作用。<br>
+&emsp;&emsp;克隆(cloning)或者是序列化(serialization)的语义和含义是跟具体的实现相关的。因此，应该由集合类的具体实现来决定如何被克隆或者是序列化。<br>
+&emsp;&emsp;Collection接口指定一组对象，对象即是它的元素，如何维护这些元素由Collection的具体实现决定，比如List的元素允许重复而Set不允许。Collection只是一个抽象表现。<br>
+&emsp;&emsp;涉及到具体实现时，clone和serialize的语义和含义才发挥作用。<br>
 
 #### 5. HashMap、Hashtable和ConcurrentHashMap的区别？ConcurrentHashMap能否完全替代Hashtable？HashMap为什么是线程不安全的？
 HashMap |	Hashtable |	ConcurrentHashMap
@@ -35,8 +35,8 @@ HashMap |	TreeMap
 适用于插入、删除、定位 |	适用于有序的遍历
 JDK 1.7：Entry<K, V>数据<br>JDK 1.8：数组+链表（链表的长度达到一个阀值8后转化为红黑树） |	红黑树
 
-不能完全替代。Hashtable的迭代器是强一致性的，ConcurrentHashMap是弱一致性的。<br>
-弱一致性是指在ConcurrentHashMap中put一个元素，对get不是立即可见的，为了提升效率，效率和一致性的权衡。<br>
+&emsp;&emsp;不能完全替代。Hashtable的迭代器是强一致性的，ConcurrentHashMap是弱一致性的。<br>
+&emsp;&emsp;弱一致性是指在ConcurrentHashMap中put一个元素，对get不是立即可见的，为了提升效率，效率和一致性的权衡。<br>
 多线程环境下扩容会导致Node链表形成环形（？？？）结构，next节点永远不为空，导致死循环。
 
 #### 6. Comparable和Comparator接口
@@ -91,12 +91,10 @@ Object类的实例方法 | Thread的静态方法 | Thread的静态方法
 进入阻塞状态<br>notify或notifyAll后进入等锁池，重新获得锁后进入就绪态 | 进入阻塞状态<br> | sleep时间结束后自动回到就绪状态	进入就绪状态
 
 #### 15. 类加载器的双亲委派模型？
-除了顶层的启动类加载器，其他的类加载器都有自己的父类加载器。<br>
-如果一个类加载器收到了加载类的请求，首先会将请求委派给父类加载器，所有的请求
-最终都会传递到顶层的启动类加载器。父类加载器反馈无法加载时，子类加载器才自己去加载类。<br>
-Java类随着它的类加载器具备了一个优先级的层次关系，比如Object类只能由顶层的
-启动类加载器加载。<br>
-类加载器的层级关系：启动类加载器（Bootstrap ClassLoader）->扩展类加载器（Extension ClassLoader）->应用程序类加载器（Application ClassLoader）->自定义类加载器（User ClassLoader）。
+&emsp;&emsp;除了顶层的启动类加载器，其他的类加载器都有自己的父类加载器。<br>
+&emsp;&emsp;如果一个类加载器收到了加载类的请求，首先会将请求委派给父类加载器，所有的请求最终都会传递到顶层的启动类加载器。父类加载器反馈无法加载时，子类加载器才自己去加载类。<br>
+&emsp;&emsp;Java类随着它的类加载器具备了一个优先级的层次关系，比如Object类只能由顶层的启动类加载器加载。<br>
+&emsp;&emsp;类加载器的层级关系：启动类加载器（Bootstrap ClassLoader）->扩展类加载器（Extension ClassLoader）->应用程序类加载器（Application ClassLoader）->自定义类加载器（User ClassLoader）。
 
 #### 16. 类实例化的顺序？code
 (1)	初始化父类的静态代码块，包括静态变量<br>
@@ -127,9 +125,8 @@ Java NIO中有一个选择器（selector），可以将多个通道（channel）
 2) 使用序列化和反序列化的方法。
 
 #### 20. 堆内存溢出和栈内存溢出？
-堆溢出包括内存泄露和内存溢出，内存泄露是指无用的对象没有被回收，一直积累；内存溢出是指程序需要的内存大于虚拟机分配的内存。<br>
-栈主要存放栈帧，局部变量表、操作数栈、动态链接、方法出口信息；栈相关的内存异
-常包括StackOverFlowError(方法调用次数太多，栈内存不够新建栈帧，比如递归的层次太多)和OutOfMemoryError(线程太多，栈内存不够新建线程)。
+&emsp;&emsp;堆溢出包括内存泄露和内存溢出，内存泄露是指无用的对象没有被回收，一直积累；内存溢出是指程序需要的内存大于虚拟机分配的内存。<br>
+&emsp;&emsp;栈主要存放栈帧，局部变量表、操作数栈、动态链接、方法出口信息；栈相关的内存异常包括StackOverFlowError(方法调用次数太多，栈内存不够新建栈帧，比如递归的层次太多)和OutOfMemoryError(线程太多，栈内存不够新建线程)。
 
 #### 21. 数据库查询left join、right join和inner join？
 left：以左表为准，右表不存在的字段为null<br>
@@ -471,9 +468,9 @@ question 19
 (3) 接口注入
 
 #### 79. Spring框架中bean的生命周期？
-一个bean实例初始化时，需要执行一系列的初始化操作以达到可用状态；不再被调用时需要执行相关的析构操作，从bean容器移除。<br>
-BeanFactory负责管理bean的生命周期，bean的生命周期由两组回调函数组成：初始化之后调用的回调方法和销毁之前调用的回调方法。<br>
-Spring框架提供了4种方式来管理bean的生命周期：
+&emsp;&emsp;一个bean实例初始化时，需要执行一系列的初始化操作以达到可用状态；不再被调用时需要执行相关的析构操作，从bean容器移除。<br>
+&emsp;&emsp;BeanFactory负责管理bean的生命周期，bean的生命周期由两组回调函数组成：初始化之后调用的回调方法和销毁之前调用的回调方法。<br>
+&emsp;&emsp;Spring框架提供了4种方式来管理bean的生命周期：
 
 #### 80. Spring的bean装配？自动装配？
 bean装配是指在spring容器中把bean组装在一起，前提是容器需要知道bean的依赖关系，通过依赖注入装配到一起。<br>
@@ -504,17 +501,17 @@ ApplicationContext对BeanFactory进行扩展，添加了其他功能，如国际
 (4) 模板方法：用来解决代码重复的问题，如RestTemplate
 
 #### 84. Spring的依赖注入（DI，Dependency Injection）和控制反转（IoC，Inversion of Control Container）？
-依赖注入：在运行时将类的依赖注入到代码中，将依赖定义为接口，将实现了这个接口的实体类注入到主类的构造器中。<br>
-依赖注入可以通过单一责任原则来提高代码的内聚，因为依赖的对象通常都是能独立完成一个功能的对象。<br>
-控制反转容器：一个支持依赖注入的中心容器，如spring框架，定义哪个依赖应该使用哪个实体类。<br>
-不实际生成对象，而是定义如何生成对象。<br>
-依赖注入和控制反转能够在运行时绑定类之间的关系，而不是编译时。<br>
-松耦合也更易于单元测试。
+&emsp;&emsp;依赖注入：在运行时将类的依赖注入到代码中，将依赖定义为接口，将实现了这个接口的实体类注入到主类的构造器中。<br>
+&emsp;&emsp;依赖注入可以通过单一责任原则来提高代码的内聚，因为依赖的对象通常都是能独立完成一个功能的对象。<br>
+&emsp;&emsp;控制反转容器：一个支持依赖注入的中心容器，如spring框架，定义哪个依赖应该使用哪个实体类。<br>
+&emsp;&emsp;不实际生成对象，而是定义如何生成对象。<br>
+&emsp;&emsp;依赖注入和控制反转能够在运行时绑定类之间的关系，而不是编译时。<br>
+&emsp;&emsp;松耦合也更易于单元测试。
 
 #### 85. Hibernate的SessionFactory和Session是线程安全的吗？SessionFactory如何保证线程安全？？？
-SessionFactory是线程安全的，Session不是。<br>
-Session表示与数据库交互的一个单元，由SessionFactory创建。<br>
-为避免创建太多session，可用ThreadLocal将session将当前线程绑定在一起，同一个线程获得的都是同一个session（Hibernate 3中SessionFactory的getCurrentSession()方法）
+&emsp;&emsp;SessionFactory是线程安全的，Session不是。<br>
+&emsp;&emsp;Session表示与数据库交互的一个单元，由SessionFactory创建。<br>
+&emsp;&emsp;为避免创建太多session，可用ThreadLocal将session将当前线程绑定在一起，同一个线程获得的都是同一个session（Hibernate 3中SessionFactory的getCurrentSession()方法）
 
 #### 86. Hibernate实体对象的三种状态（四种）？
 瞬时态、持久态、游离态、移除态<br>
@@ -523,8 +520,8 @@ Session表示与数据库交互的一个单元，由SessionFactory创建。<br>
 (3) 游离态（detached）：session进行close、clear、evict、flush后，实体对象从持久态变成游离态
 
 #### 87. 如何理解Hibernate的延迟加载机制？如何处理延迟加载和session关闭的矛盾？
-不是在读取的时候就把数据加载进来，而是在实际使用的时候再加载。<br>
-Hibernate使用虚拟代理的机制实现延迟加载，使用session的load方法，或者一对多的映射关系一的一方加载多的一方，得到的都是虚拟代理，返回的不是实体本身，而是实体对象的代理，代理对象在被调用getter方法的时候才会从数据库加载数据。<br>
+&emsp;&emsp;不是在读取的时候就把数据加载进来，而是在实际使用的时候再加载。<br>
+&emsp;&emsp;Hibernate使用虚拟代理的机制实现延迟加载，使用session的load方法，或者一对多的映射关系一的一方加载多的一方，得到的都是虚拟代理，返回的不是实体本身，而是实体对象的代理，代理对象在被调用getter方法的时候才会从数据库加载数据。<br>
 
 加载数据需要连接数据库，而session关闭后相当于断开了数据库连接，二者存在矛盾。<br>
 延迟加载和session关闭的矛盾处理方式：<br>
@@ -551,9 +548,9 @@ openSession | getCurrentSession
 不需要配置 | 需要配置<br>&lt;property name="current_session_context_class"&gt;thread&lt;/property&gt;
 
 #### 90. Spring如何使用ThreadLocal解决线程安全问题？
-ThreadLocal是线程的一个本地化对象。多线程环境的对象使用ThreadLocal维护变量时，为每个线程分配一个变量副本，每个线程可以独立的改变自己的副本，相当于线程的本地变量。<br>
-ThreadLocal类中有一个内部类ThreadLocalMap，key为线程对象，value为线程的变量副本。<br>
-数据连接和会话一般是非线程安全的，
+&emsp;&emsp;ThreadLocal是线程的一个本地化对象。多线程环境的对象使用ThreadLocal维护变量时，为每个线程分配一个变量副本，每个线程可以独立的改变自己的副本，相当于线程的本地变量。<br>
+&emsp;&emsp;ThreadLocal类中有一个内部类ThreadLocalMap，key为线程对象，value为线程的变量副本。<br>
+&emsp;&emsp;数据连接和会话一般是非线程安全的，
 
 #### 91. 什么是XSS攻击和CSRF攻击？
 XSS（Cross Site Script）跨站脚本，向网页中注入恶意脚本，用户浏览网页时在用户浏览器中执行。反射型：诱使用户点击含有恶意脚本的链接；持久型：将脚本提交到网站的数据库中，用户访问时从数据库加载到页面中执行。<br>
@@ -568,9 +565,9 @@ CSRF（Cross Site Request Forgery）跨站请求伪造，通过跨站的请求�
 (3) 检查请求头中的Referer，Referer是http请求头的一个属性，表明请求来自哪里。
 
 #### 92. 时间处理类SimpleDateFormat非线程安全，用ThreadLocal封装成线程安全。
-SimpleDateFormat内部引用了一个Calendar对象来处理时间，parse方法有一个clear的操作和一个getTime的操作，多线程环境下不同线程如果共享一个SimpleDateFormat对象，调用parsr方法时在clear和getTime之间就会存在冲突。<br>
-项目实例：<br>
-一个并发较大的接口服务，使用账号+秘钥+时间戳做身份和权限认证，认证的中间件接口定义了一个SimpleDateFormat单例，用于检查时间戳和系统当前时间的差，并发情况下得到的时间差不正确。
+&emsp;&emsp;SimpleDateFormat内部引用了一个Calendar对象来处理时间，parse方法有一个clear的操作和一个getTime的操作，多线程环境下不同线程如果共享一个SimpleDateFormat对象，调用parsr方法时在clear和getTime之间就会存在冲突。<br>
+&emsp;&emsp;项目实例：<br>
+&emsp;&emsp;一个并发较大的接口服务，使用账号+秘钥+时间戳做身份和权限认证，认证的中间件接口定义了一个SimpleDateFormat单例，用于检查时间戳和系统当前时间的差，并发情况下得到的时间差不正确。
 
 #### 93. 垃圾回收Serial GC和Parallel GC的区别？Minor GC、Major GC、Full GC的区别？并行收集器和并发收集器？
 都会引起stop-the-world。<br>
@@ -616,10 +613,10 @@ CMS收集器（Concurrent Mark Sweep，老年代收集器）：以获取最短�
 (9) 容器为空的时候返回长度是0的集合或者数组，不要返回null。
 
 #### 97. volatile和synchronized的比较
-线程安全包括两个方面：原子性和可见性<br>
-锁提供了两种特性：互斥和可见性<br>
-多线程环境下内存可分成主内存和线程的本地内存，线程执行时，将变量从主内存读到本地内存，操作后，在某一时间将变量写回主内存。为了加快速度，写回主内存之前可能先在寄存器或CPU缓存上进行，这时变量的新值对其他线程是不可见的。<br>
-Volatile修饰的变量修改时，会将缓存中的修改前的值清除。告知JVM寄存器中的值是不确定的，需要从主内存中读取
+&emsp;&emsp;线程安全包括两个方面：原子性和可见性<br>
+&emsp;&emsp;锁提供了两种特性：互斥和可见性<br>
+&emsp;&emsp;多线程环境下内存可分成主内存和线程的本地内存，线程执行时，将变量从主内存读到本地内存，操作后，在某一时间将变量写回主内存。为了加快速度，写回主内存之前可能先在寄存器或CPU缓存上进行，这时变量的新值对其他线程是不可见的。<br>
+&emsp;&emsp;Volatile修饰的变量修改时，会将缓存中的修改前的值清除。告知JVM寄存器中的值是不确定的，需要从主内存中读取
 
 volatile | synchronized
 -|-
@@ -684,17 +681,17 @@ Thread的静态方法 | Thread的实例方法
 (2) 避免竞态条件，比如生产-消费模型，生产和消费都是“先检查后执行”，如果没有在synchronized代码块中执行wait/notify，可能出现生产者还没wait，消费者就先notify，那之后生产者就永远不会被通知到。
 
 #### 108. 对于线程来说，堆内存和栈内存有什么区别？
-每个线程都有自己的栈内存，用于存储本地变量、方法参数、栈调用，一个线程中存储的变量对其他线程是不可见的。<br>
-堆内存是所有线程共享的，对象都在堆中创建。<br>
-为了提高效率，线程会从堆中弄一块内存缓存在自己的栈中，如果多个线程使用同一个变量就会引发问题，这是volatile变量就会发挥作用了，它要求线程从主内存中读取该变量的值。
+&emsp;&emsp;每个线程都有自己的栈内存，用于存储本地变量、方法参数、栈调用，一个线程中存储的变量对其他线程是不可见的。<br>
+&emsp;&emsp;堆内存是所有线程共享的，对象都在堆中创建。<br>
+&emsp;&emsp;为了提高效率，线程会从堆中弄一块内存缓存在自己的栈中，如果多个线程使用同一个变量就会引发问题，这是volatile变量就会发挥作用了，它要求线程从主内存中读取该变量的值。
 
 #### 109. Java同步集合和并发集合的区别？
-都能实现线程安全，区别在于性能和可扩展性，还有实现线程安全的方法。<br>
-同步集合有：HashMap、Hashtable、HashSet、Vector、ArrayList<br>
-并发集合有：ConcurrentHashMap、CopyOnWriteArrayList、CopyOnWriteHashSet<br>
-同步集合会把整个List或Map锁起来，而并发集合使用了较先进的技术，如锁分离，比如ConcurrentHashMap把Map分成几个片段，只对几个加锁，允许其他线层访问未加锁的片段。<br>
-CopyOnWriteArrayList允许多个线程以非同步的方式读，有线程需要写的时候复制一个副本。<br>
-在读多写少的情况下使用并发集合比同步集合能获得更好的性能。
+&emsp;&emsp;都能实现线程安全，区别在于性能和可扩展性，还有实现线程安全的方法。<br>
+&emsp;&emsp;同步集合有：HashMap、Hashtable、HashSet、Vector、ArrayList<br>
+&emsp;&emsp;并发集合有：ConcurrentHashMap、CopyOnWriteArrayList、CopyOnWriteHashSet<br>
+&emsp;&emsp;同步集合会把整个List或Map锁起来，而并发集合使用了较先进的技术，如锁分离，比如ConcurrentHashMap把Map分成几个片段，只对几个加锁，允许其他线层访问未加锁的片段。<br>
+&emsp;&emsp;CopyOnWriteArrayList允许多个线程以非同步的方式读，有线程需要写的时候复制一个副本。<br>
+&emsp;&emsp;在读多写少的情况下使用并发集合比同步集合能获得更好的性能。
 
 #### 110. 多线程生产-消费模型实例？在环境下如何实现？
 wait-notify<br>
@@ -765,8 +762,8 @@ Element：从Document中抽取出来的node节点<br>
 spring-test
 
 #### 124. Spring源码-AOP？在项目中的使用？和拦截器、过滤器的区别？？？
-两种代理的方式：默认使用JDK动态代理，目标类无接口的时候用cglib（code generation library），代码生成类库，可以在运行时时期扩展Java类实现Java接口，动态生成新的class<br>
-权限验证、异常处理。
+&emsp;&emsp;两种代理的方式：默认使用JDK动态代理，目标类无接口的时候用cglib（code generation library），代码生成类库，可以在运行时时期扩展Java类实现Java接口，动态生成新的class<br>
+&emsp;&emsp;权限验证、异常处理。
 
 #### 125. 什么是线程调度器（Thread Scheduler）和时间分片（Time Slicing）？
 线程调度器是一个操作系统服务，为runnable状态的线程分配CPU时间。<br>
@@ -774,9 +771,9 @@ spring-test
 时间分片是指将可用的CPU时间分配给可用的runnable线程的过程。<br>
 
 #### 126. 为什么wait()、notify()、notifyAll()必须在同步方法或同步代码块中调用？
-当一个线程需要调用一个对象的wait方法的时候，必须拥有该对象的锁，调用后会释放锁并进入等待状态，知道其他线程调用这个对象的notify方法。<br>
-同样的，线程调用对象的notify方法时，会释放对象的锁，其他等待的线程可以得到这个对象的锁。<br>
-所有的这些方法都需要线程持有对象的锁，只能通过同步来实现。
+&emsp;&emsp;当一个线程需要调用一个对象的wait方法的时候，必须拥有该对象的锁，调用后会释放锁并进入等待状态，知道其他线程调用这个对象的notify方法。<br>
+&emsp;&emsp;同样的，线程调用对象的notify方法时，会释放对象的锁，其他等待的线程可以得到这个对象的锁。<br>
+&emsp;&emsp;所有的这些方法都需要线程持有对象的锁，只能通过同步来实现。
 
 #### 127. 为什么Thread类的sleep()和yield()方法是静态的？
 sleep()和yield()方法将在当前正在运行的线程上执行，在其他等待状态的线程上调用是没有意义的。
@@ -808,8 +805,8 @@ servlet处于服务器进程中，通过多线程的方式运行其service方法
 而CGI对每一个请求产生一个新的进程，服务完成就销毁，效率较低。
 
 #### 132. 在静态方法上使用同步会怎样？
-同步静态方法时会获取该类的Class对象，当一个线程进入同步的静态方法时，线程监视器获取类本身的对象锁，其他线程不能进入这个类的其他静态同步方法。<br>
-在实例方法上使用同步，多个线程可以同时方法不同实例的同步方法。
+&emsp;&emsp;同步静态方法时会获取该类的Class对象，当一个线程进入同步的静态方法时，线程监视器获取类本身的对象锁，其他线程不能进入这个类的其他静态同步方法。<br>
+&emsp;&emsp;在实例方法上使用同步，多个线程可以同时方法不同实例的同步方法。
 
 #### 133. 两个线程可以同时调用同一个对象的两个不同的同步方法吗？
 不能。当一个线程进入该对象的一个同步方法时，线程获取了该对象的对象锁，只有执行完了同步方法释放了对象锁，才能执行其他同步方法。
